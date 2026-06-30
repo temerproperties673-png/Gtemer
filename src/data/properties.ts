@@ -11,7 +11,7 @@ export const CONSULTANT = {
   phone: "+251949775542",
   phoneDisplay: "+251 949 775 542",
   whatsapp: "251923791278",
-  email: "Getumaru7@gmail.com",
+  email: "temerrealestatesaless@gmail.com",
   office: "Bole, Addis Ababa, Ethiopia",
   officeCoordinates: "8.992234,38.791513",
 };

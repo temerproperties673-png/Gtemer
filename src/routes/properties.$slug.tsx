@@ -17,6 +17,7 @@ import { CONSULTANT, waLink, type Property } from "@/data/properties";
 import { InquiryForm } from "@/components/site/InquiryForm";
 import { PropertyCard } from "@/components/site/PropertyCard";
 import { supabase } from "@/integrations/supabase/client";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/properties/$slug")({
   loader: async ({ params }): Promise<{ property: Property; related: Property[] }> => {
@@ -136,6 +137,7 @@ function PropertyDetail() {
     related: Property[];
   };
   const [activeImg, setActiveImg] = useState(0);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   const images = [p.cover_image, ...(p.gallery || [])].filter(Boolean) as string[];
   const activeSrc = images[activeImg] || "";
@@ -154,16 +156,30 @@ function PropertyDetail() {
       {/* GALLERY */}
       <div className="container-x mt-6">
         <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
-          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted">
+          <button
+            onClick={() => setIsLightboxOpen(true)}
+            className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted w-full text-left group/gallery cursor-zoom-in"
+          >
             {activeSrc ? (
-              <img src={activeSrc} alt={p.title} className="h-full w-full object-cover" />
+              <>
+                <img
+                  src={activeSrc}
+                  alt={p.title}
+                  className="h-full w-full object-cover transition duration-500 group-hover/gallery:scale-[1.02]"
+                />
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/gallery:opacity-100 transition duration-300 flex items-center justify-center">
+                  <span className="bg-black/60 text-white rounded-full px-4 py-2 text-sm font-medium backdrop-blur">
+                    Click to zoom
+                  </span>
+                </div>
+              </>
             ) : (
               <div className="flex h-full w-full items-center justify-center bg-muted">
                 <span className="text-muted-foreground">No image available</span>
               </div>
             )}
             <span className="absolute left-4 top-4 badge-status">{p.status}</span>
-          </div>
+          </button>
           <div className="grid grid-cols-3 gap-3 lg:grid-cols-1">
             {images.slice(0, 3).map((src, i) => (
               <button
@@ -177,6 +193,21 @@ function PropertyDetail() {
           </div>
         </div>
       </div>
+
+      {/* LIGHTBOX DIALOG */}
+      <Dialog open={isLightboxOpen} onOpenChange={setIsLightboxOpen}>
+        <DialogContent className="max-w-[95vw] max-h-[95vh] border-none bg-black/95 p-0 text-white flex items-center justify-center overflow-hidden select-none [&>button]:text-white [&>button]:opacity-90 [&>button]:h-8 [&>button]:w-8">
+          <div className="relative w-full h-full min-h-[50vh] flex items-center justify-center p-4">
+            {activeSrc && (
+              <img
+                src={activeSrc}
+                alt={p.title}
+                className="max-h-[90vh] max-w-full object-contain rounded-lg shadow-2xl"
+              />
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="container-x mt-10 grid gap-10 lg:grid-cols-[1fr_380px]">
         {/* MAIN */}

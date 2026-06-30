@@ -1,10 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { Menu, X, Phone, LayoutDashboard, Languages } from "lucide-react";
+import { Menu, X, Phone, LayoutDashboard, Languages, ChevronDown } from "lucide-react";
 import { CONSULTANT } from "@/data/properties";
 import { useAuth } from "@/hooks/use-auth";
 import { useLanguage } from "@/i18n/LanguageContext";
-import type { TranslationKey } from "@/i18n/translations";
+import type { TranslationKey, Lang } from "@/i18n/translations";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/", key: "nav.home" },
@@ -13,18 +19,55 @@ const NAV: { to: string; key: TranslationKey }[] = [
   { to: "/contact", key: "nav.contact" },
 ];
 
+const langLabels: Record<Lang, string> = {
+  en: "EN",
+  am: "አማ",
+  om: "OR",
+  ti: "ትግ",
+  so: "SO",
+};
+
+const languages: { code: Lang; label: string; subLabel: string }[] = [
+  { code: "en", label: "English", subLabel: "English" },
+  { code: "am", label: "አማርኛ", subLabel: "Amharic" },
+  { code: "om", label: "Afaan Oromoo", subLabel: "Oromo" },
+  { code: "ti", label: "ትግርኛ", subLabel: "Tigrinya" },
+  { code: "so", label: "Soomaali", subLabel: "Somali" },
+];
+
 function LangToggle({ className = "" }: { className?: string }) {
   const { lang, setLang } = useLanguage();
   return (
-    <button
-      onClick={() => setLang(lang === "en" ? "am" : "en")}
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-sm font-medium text-foreground hover:bg-accent transition ${className}`}
-      aria-label="Toggle language"
-      title={lang === "en" ? "Switch to Amharic" : "Switch to English"}
-    >
-      <Languages className="h-4 w-4 text-primary" />
-      <span className="font-semibold">{lang === "en" ? "አማ" : "EN"}</span>
-    </button>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className={`inline-flex items-center gap-1.5 rounded-full border border-border/40 bg-accent/15 px-3.5 py-2 text-xs font-semibold text-foreground hover:bg-accent/40 transition duration-200 cursor-pointer ${className}`}
+          aria-label="Select language"
+        >
+          <Languages className="h-3.5 w-3.5 text-primary" />
+          <span>{langLabels[lang]}</span>
+          <ChevronDown className="h-3 w-3 opacity-60" />
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-[180px] bg-background/95 border border-border/60 p-1.5 shadow-xl backdrop-blur-xl rounded-2xl z-50">
+        {languages.map((l) => (
+          <DropdownMenuItem
+            key={l.code}
+            onClick={() => setLang(l.code)}
+            className={`flex flex-col items-start gap-0.5 px-3 py-2 rounded-xl text-sm transition cursor-pointer ${
+              lang === l.code
+                ? "bg-primary text-primary-foreground font-semibold"
+                : "text-foreground hover:bg-accent"
+            }`}
+          >
+            <span>{l.label}</span>
+            <span className={`text-[10px] uppercase tracking-wider ${lang === l.code ? "text-primary-foreground/75" : "text-muted-foreground"}`}>
+              {l.subLabel}
+            </span>
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

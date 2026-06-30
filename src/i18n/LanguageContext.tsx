@@ -17,7 +17,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved === "en" || saved === "am") setLangState(saved);
+      if (saved === "en" || saved === "am" || saved === "om" || saved === "ti" || saved === "so") setLangState(saved);
     } catch {
       // ignore localStorage security/access errors on SSR or sandboxed environments
     }

@@ -15,22 +15,22 @@ export function PropertyCard({ p }: { p: Property }) {
       <Link
         to="/properties/$slug"
         params={{ slug: p.slug }}
-        className="relative block aspect-[4/3] overflow-hidden"
-      >
-        {p.cover_image ? (
-          <img
-            src={p.cover_image}
-            alt={p.title}
-            loading="lazy"
-            width={1280}
-            height={896}
-            className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="flex h-full w-full items-center justify-center bg-muted">
-            <span className="text-muted-foreground">No image</span>
-          </div>
-        )}
+      className="relative block aspect-[4/3] overflow-hidden"
+    >
+      {p.cover_image ? (
+        <img
+          src={p.cover_image}
+          alt={p.title}
+          loading="lazy"
+          width={1280}
+          height={896}
+          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-muted">
+          <span className="text-muted-foreground">No image</span>
+        </div>
+      )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-60 transition-opacity group-hover:opacity-80" />
         <span
           className={`absolute left-4 top-4 inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-wide shadow-lg ${statusStyles[p.status]}`}

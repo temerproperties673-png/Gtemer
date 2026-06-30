@@ -87,6 +87,96 @@ const content = {
       buttonBook: "ምክክር ይያዙ",
     },
   },
+  om: {
+    kicker: "Waa'ee Keenya",
+    title: "Bara 2010 EC irraa jalqabee Itoophiyaa keessatti qabeenya lafaa jijjiiraa jirra",
+    sectionTitle: "Waa'ee Qabeenya Teemer",
+    sectionSubtitle: "Ijaarsa Qabeenya Teemer",
+    paragraphs: [
+      "Qabeenyi Teemer (Teemer Real Estate jedhamuunis kan beekamu) bara 2010 EC keessa namoota abjuu qaban lamaan Itoophiyaa keessatti qabeenya lafaa jijjiiruuf kaayyoofi ergama qabaniin hundeeffame. Itoophiyaa keessatti, keessattuu Finfinneetti, ijaarsa manneen jireenyaa fi daldalaa qulqullina qaban dhiyeessuu irratti xiyyeeffachuun, pirojektoota gurguddoo 10 ol milkiidhaan xumurreerra. Kanaanis apaartamoota qulqullina qaban 350 ol fi manneen jireenyaa ammayyaa mamiloota keenyaaf dhiyeessineerra.",
+      "Amma ijaarsa apaartamoota haaraa fi iddoowwan daldalaa hojjechaa jirra. Kanaanis mamiloota keenyaaf manneen jireenyaa gatii madaalamaan daldalaaf bakka gaarii dhiyeessina. Qabeenyotni keenya sanyii adda addaa keessatti argamu, kanneen akka Piyaasaa, Adwaa 001, Sumaaleee Teeraa, Saarbeet, Ayaat, Gaarmanti fi Liisee—hundi isaanii akkaataa teessuma, gatii fi guddinaaf filatamaniiru.",
+      "Itoophiyaa keessatti dhaabbata qabeenya lafaa beekamaa ta'uuf abjuu qabnuun, Qabeenyi Teemer kalaqaan, amanamummaafi qulqullinaani kan beekamudha. Apaartamoonni keenya Itoophiyaa keessatti sadarkaa olaanaan ijaaraman, tajaajilawwan gaariifi gatii madaalamaan. Itoophiyaa keessatti apaartamaa, maatii keessaniif mana ykn daldalaaf suuqii yoo barbaaddan, Qabeenyi Teemer abjuu keessan dhugoomsuuf michuu amansiisaadha.",
+    ],
+    stats: [
+      { k: "10+", v: "Pirojektoota Gurguddoo" },
+      { k: "350+", v: "Apaartamoota" },
+      { k: "2010 EC", v: "Hundeeffame" },
+    ],
+    expertiseTitle: "Dandeettii Keenya",
+    expertiseList: [
+      "Apaartamoota Jireenyaa",
+      "Viilaa Hifame",
+      "Iddoowwan Daldalaa",
+      "Qabeenya Investimentii",
+      "Bakkeewwan Gaarii",
+      "Ijaarsa Qulqullina Qabu",
+    ],
+    contactCard: {
+      title: "Nu Quunnamaa",
+      hours: "Wiixata – Sabataa, 3:00 am – 7:00 pm",
+      buttonBook: "Gorsa Qabadhaa",
+    },
+  },
+  ti: {
+    kicker: "ብዛዕባና",
+    title: "ካብ 2010 ዓ.ም ጀሚርና ኣብ ኢትዮጵያ ናይ ሪል ስቴት ጽላት ንቕይር ኣለና",
+    sectionTitle: "ብዛዕባ ቴምር ፕሮፐርቲስ",
+    sectionSubtitle: "ህንጻ ቴምር ፕሮፐርቲስ",
+    paragraphs: [
+      "ቴምር ፕሮፐርቲስ (ቴምር ሪል ስቴት ብዝብል እውን ዝፍለጥ) ኣብ 2010 ዓ.ም ብኽልተ በዓል ራእይ ውልቀሰባት ዝተመስረተ ኮይኑ፣ ዕላምኡ ድማ ኣብ ኢትዮጵያ ዘሎ ናይ ሪል ስቴት ጽላት ምቕያር እዩ። ዘመናዊን ምሹእን ዝኾነ ናይ ሪል ስቴት ህንጻታት ብፍላይ ኣብ ኣዲስ ኣበባ ከተማ ንምብጻሕ ቆራጽነት ብምግባር፣ ክሳብ ሕጂ ካብ 10 ንላዕሊ ዓበይቲ ፕሮጀክትታት ብዓወት ብምዝዛም ካብ 350 ንላዕሊ ፅሬት ዘለዎም ናይ ኣፓርትመንት ኣባይትን ዘመናዊ መኖሪያታትን ንዓማዊልና ኣቕሪብና ኣለና።",
+      "ኣብዚ እዋን ኣብ ኢትዮጵያ ሓደስቲ ኣፓርትመንትታትን ናይ ንግዲ ዱካናትን ኣብ ምህናጽ ንርከብ፤ እዚ ድማ ንዓማዊልና ተመጣጣኒ መኖሪያታትን ምሹእ ናይ ንግዲ ቦታታትን ኣብ ቀንዲ ከባቢታት የቕርብ። ንብረታትና ብፍላይ ተበጻሕነቶም፣ ዋጋኦምን ናይ ዕብየት ዓቕሞምን ተጸኒዑ ኣብ ዝተመርጹ ከም ፒያሳ፣ ዓድዋ 001፣ ሱማሌ ተራ፣ ሳርቤት፣ ኣያት፣ ጋርመንትን ሊሴን ዝበሉ ከባቢታት ይርከቡ።",
+      "ኣብ ኢትዮጵያ ብሉጽ ናይ ሪል ስቴት ኩባንያ ንምዃን ብዘለና ትምኒት ዝምራሕ ቴምር ፕሮፐርቲስ፣ ብምህዞ፣ ብተኣማንነትን ንጽሬት ብዘለዎ ቆራጽነትን ይፍለጥ። ኣብ ኢትዮጵያ እንሃንጾም ኣፓርትመንትታት ብሉጽ ጽሬት ዘለዎ ህንጻ፣ ማራኺ ኣገልግሎታትን ተወዳዳሪ ዋጋታትን ዘጠቓለሉ እዮም። ኣብ ኢትዮጵያ ኣፓርትመንትታት፣ ንስድራቤትኩም ዝኸውን ገዛ ወይ ንንግድኹም ዝኸውን ዱካናት ትደልዩ እንተደኣ ኴንኩም፣ ቴምር ፕሮፐርቲስ ናይ ሪል ስቴት ሕልምታትኩም እውን ንምግባር ዝተኣመነ መሻርኽትኹም እዩ።",
+    ],
+    stats: [
+      { k: "10+", v: "ዓበይቲ ፕሮጀክትታት" },
+      { k: "350+", v: "ኣፓርትመንትታት" },
+      { k: "2010 ዓ.ም", v: "ዝተመስረተሉ" },
+    ],
+    expertiseTitle: "ቀንዲ ናይ ስራሕ ዓውድታት",
+    expertiseList: [
+      "መኖሪያ ኣፓርትመንትታት",
+      "ቅንጦት ቪላታት",
+      "ናይ ንግዲ ቦታታት",
+      "ናይ ኢንቨስትመንት ንብረት",
+      "ስልታዊ ቦታታት",
+      "ጽሬት ዘለዎ ህንጻ",
+    ],
+    contactCard: {
+      title: "ርኸቡና",
+      hours: "ሰኑይ – ቀዳም፣ 3:00 ቅ.ቀ - 7:00 ድ.ቀ",
+      buttonBook: "ምኽሪ ይሓዙ",
+    },
+  },
+  so: {
+    kicker: "Nagu Saabsan",
+    title: "Waxaan wax ka beddeleynaa qeybta guryaha ee Itoobiya tan iyo 2010 EC",
+    sectionTitle: "Ku saabsan Temer Properties",
+    sectionSubtitle: "Dhismaha Temer Properties",
+    paragraphs: [
+      "Temer Properties (sidoo kale loo yaqaan Temer Real Estate) waxaa la aasaasay 2010 EC laba qof oo hiigsi leh oo waday hadaf ah inay wax ka beddelaan qaabka guryaha ee Itoobiya. Anagoo diirada saareysa inaan gaarsiino guryo casri ah, gaar ahaan magaalada Addis Ababa, waxaan si guul leh u dhameystirnay in ka baxan 10 mashaariicda waaweyn, annagoo siinay in ka badan 350 guryo dabaqyo ah oo tayo leh macaamiisheena qiimaha leh.",
+      "Hada, waxaan si firfircoon u dhiseynaa guryo dabaqyo cusub ah iyo dukaamo ganacsi, anagoo u fidineyna macaamiisha guryo la awoodi karo iyo goobo ganacsi oo ku yaala meelaha ugu fiican. Guryahayagu waxay ku yaalaan meelo muhiim ah sida Piassa, Adwa 001, Sumale Tera, Sarbet, Ayat, Garment, iyo Lycee—meel kasta waxaa loo doortay sahlanaanta gaaritaanka, qiimaha iyo fursada koritaanka.",
+      "Anagoo ku shaqeyneyna hammiga ah inaan noqono shirkada guryaha ugu fiican Itoobiya, Temer Properties waxaa lagu yaqaanaa hal-abuurnimo, kalsooni, iyo u heellanida tayada. Dabaqyadayada Itoobiya waxaa loo dhisay heerarka ugu sarreeya, iyagoo leh dhisme tayo sare leh, adeegyo wanaagsan iyo qiimo tartan ah. Haddii aad raadineyso dabaqyo, guri qoyskaaga ah ama dukaamo ganacsi, Temer Properties waa wadaagaaga lagu kalsoon yahay si aad u xaqiijiso riyadaada guryaha.",
+    ],
+    stats: [
+      { k: "10+", v: "Mashaariicda Waaweyn" },
+      { k: "350+", v: "Dabaqyo Guryo ah" },
+      { k: "2010 EC", v: "La Aasaasay" },
+    ],
+    expertiseTitle: "Qeybaha aan ku Fiicanahay",
+    expertiseList: [
+      "Dabaqyada Deegaanka",
+      "Guryaha Luxury-ga ah",
+      "Goobaha Ganacsiga",
+      "Hantida Maalgashiga",
+      "Goobaha Muhiimka ah",
+      "Dhismo Tayo leh",
+    ],
+    contactCard: {
+      title: "Nala soo xiriir",
+      hours: "Isniin – Sabti, 9am – 7pm",
+      buttonBook: "Ballanso Talo bixin",
+    },
+  },
 };
 
 function About() {
