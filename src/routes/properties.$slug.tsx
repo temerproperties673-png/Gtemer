@@ -1,0 +1,342 @@
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useState } from "react";
+import {
+  Bed,
+  Bath,
+  Maximize,
+  MapPin,
+  Building2,
+  Calendar,
+  CheckCircle2,
+  Phone,
+  MessageCircle,
+  CalendarDays,
+  ArrowLeft,
+} from "lucide-react";
+import { CONSULTANT, waLink, type Property } from "@/data/properties";
+import { InquiryForm } from "@/components/site/InquiryForm";
+import { PropertyCard } from "@/components/site/PropertyCard";
+import { supabase } from "@/integrations/supabase/client";
+
+export const Route = createFileRoute("/properties/$slug")({
+  loader: async ({ params }): Promise<{ property: Property; related: Property[] }> => {
+    const { data: property } = await supabase
+      .from("properties")
+      .select("*")
+      .eq("slug", params.slug)
+      .eq("published", true)
+      .single();
+
+    if (!property) throw notFound();
+
+    const { data: related } = await supabase
+      .from("properties")
+      .select("*")
+      .eq("published", true)
+      .neq("id", property.id)
+      .limit(3);
+
+    return { property: property as Property, related: (related || []) as Property[] };
+  },
+  head: ({ loaderData, params }) => {
+    const p = loaderData?.property;
+    const url = `https://addispropertymarket.com/properties/${params.slug}`;
+    return {
+      meta: [
+        { title: p ? `${p.title} — Addis Property Market` : "Property — Addis Property Market" },
+        {
+          name: "description",
+          content: p
+            ? `${p.title} in ${p.location}. ${p.area}. Contact for pricing and site visit.`
+            : "Property listing",
+        },
+        { property: "og:title", content: p?.title ?? "Property" },
+        { property: "og:description", content: p?.description?.slice(0, 160) ?? "" },
+        { property: "og:image", content: p?.cover_image ?? "" },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "product" },
+        { name: "twitter:image", content: p?.cover_image ?? "" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: p
+        ? [
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                name: p.title,
+                description: p.description,
+                image: [p.cover_image, ...(p.gallery || [])].filter(Boolean),
+                category: p.property_type,
+                brand: { "@type": "Organization", name: p.developer },
+                offers: {
+                  "@type": "Offer",
+                  availability: "https://schema.org/InStock",
+                  priceCurrency: "ETB",
+                  price: "0",
+                  priceSpecification: {
+                    "@type": "PriceSpecification",
+                    description: "Contact for pricing",
+                  },
+                  url,
+                  seller: {
+                    "@type": "RealEstateAgent",
+                    name: "Addis Property Market",
+                    telephone: CONSULTANT.phone,
+                  },
+                },
+                additionalProperty: [
+                  p.bedrooms != null && {
+                    "@type": "PropertyValue",
+                    name: "Bedrooms",
+                    value: p.bedrooms,
+                  },
+                  p.bathrooms != null && {
+                    "@type": "PropertyValue",
+                    name: "Bathrooms",
+                    value: p.bathrooms,
+                  },
+                  { "@type": "PropertyValue", name: "Area", value: p.area },
+                  { "@type": "PropertyValue", name: "Location", value: p.location },
+                  { "@type": "PropertyValue", name: "Completion", value: p.completion_date },
+                ].filter(Boolean),
+              }),
+            },
+            {
+              type: "application/ld+json",
+              children: JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "BreadcrumbList",
+                itemListElement: [
+                  { "@type": "ListItem", position: 1, name: "Home", item: "/" },
+                  { "@type": "ListItem", position: 2, name: "Properties", item: "/properties" },
+                  { "@type": "ListItem", position: 3, name: p.title, item: url },
+                ],
+              }),
+            },
+          ]
+        : [],
+    };
+  },
+  notFoundComponent: () => (
+    <div className="container-x py-24 text-center">
+      <h1 className="font-display text-4xl font-bold">Property not found</h1>
+      <Link to="/properties" className="btn-primary mt-6">
+        Back to listings
+      </Link>
+    </div>
+  ),
+  component: PropertyDetail,
+});
+
+function PropertyDetail() {
+  const { property: p, related } = Route.useLoaderData() as {
+    property: Property;
+    related: Property[];
+  };
+  const [activeImg, setActiveImg] = useState(0);
+
+  const images = [p.cover_image, ...(p.gallery || [])].filter(Boolean) as string[];
+  const activeSrc = images[activeImg] || "";
+
+  return (
+    <article>
+      <div className="container-x pt-8">
+        <Link
+          to="/properties"
+          className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="h-4 w-4" /> All properties
+        </Link>
+      </div>
+
+      {/* GALLERY */}
+      <div className="container-x mt-6">
+        <div className="grid gap-3 lg:grid-cols-[2fr_1fr]">
+          <div className="relative aspect-[16/10] overflow-hidden rounded-2xl bg-muted">
+            {activeSrc ? (
+              <img src={activeSrc} alt={p.title} className="h-full w-full object-cover" />
+            ) : (
+              <div className="flex h-full w-full items-center justify-center bg-muted">
+                <span className="text-muted-foreground">No image available</span>
+              </div>
+            )}
+            <span className="absolute left-4 top-4 badge-status">{p.status}</span>
+          </div>
+          <div className="grid grid-cols-3 gap-3 lg:grid-cols-1">
+            {images.slice(0, 3).map((src, i) => (
+              <button
+                key={i}
+                onClick={() => setActiveImg(i)}
+                className={`relative aspect-[4/3] overflow-hidden rounded-xl border-2 transition ${i === activeImg ? "border-primary" : "border-transparent"}`}
+              >
+                <img src={src} alt="" loading="lazy" className="h-full w-full object-cover" />
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="container-x mt-10 grid gap-10 lg:grid-cols-[1fr_380px]">
+        {/* MAIN */}
+        <div>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <div>
+              <span className="badge-soft">{p.property_type}</span>
+              <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl">{p.title}</h1>
+              <p className="mt-2 inline-flex items-center gap-1.5 text-muted-foreground">
+                <MapPin className="h-4 w-4" /> {p.location}
+              </p>
+            </div>
+            <div className="rounded-2xl bg-accent px-5 py-3 text-accent-foreground">
+              <div className="text-xs font-semibold uppercase tracking-wide">Pricing</div>
+              <div className="font-display text-lg font-semibold">Contact for Pricing</div>
+              <div className="text-xs">Payment Plans Available</div>
+            </div>
+          </div>
+
+          {/* SPECS */}
+          <div className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
+            {[
+              p.bedrooms != null ? { icon: Bed, label: "Bedrooms", val: p.bedrooms } : null,
+              p.bathrooms != null ? { icon: Bath, label: "Bathrooms", val: p.bathrooms } : null,
+              { icon: Maximize, label: "Area", val: p.area },
+              p.completion_date
+                ? { icon: Calendar, label: "Completion", val: p.completion_date }
+                : null,
+            ]
+              .filter(Boolean)
+              .map((s, i) => {
+                const sp = s as { icon: typeof Bed; label: string; val: string | number };
+                return (
+                  <div key={i} className="rounded-2xl border border-border bg-card p-4">
+                    <sp.icon className="h-5 w-5 text-primary" />
+                    <div className="mt-2 text-xs text-muted-foreground">{sp.label}</div>
+                    <div className="font-semibold">{sp.val}</div>
+                  </div>
+                );
+              })}
+          </div>
+
+          {/* DESCRIPTION */}
+          <section className="mt-10">
+            <h2 className="font-display text-2xl font-semibold">Overview</h2>
+            <p className="mt-4 leading-relaxed text-muted-foreground">{p.description}</p>
+            <dl className="mt-6 grid gap-3 sm:grid-cols-2 text-sm">
+              <Row icon={Building2} label="Developer" value={p.developer} />
+              {p.completion_date && (
+                <Row icon={Calendar} label="Completion Date" value={p.completion_date} />
+              )}
+              <Row icon={MapPin} label="Location" value={p.location} />
+              <Row icon={Maximize} label="Area" value={p.area} />
+            </dl>
+          </section>
+
+          {/* AMENITIES */}
+          <section className="mt-10">
+            <h2 className="font-display text-2xl font-semibold">Amenities</h2>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+              {(p.amenities || []).map((a) => (
+                <li
+                  key={a}
+                  className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-3 text-sm"
+                >
+                  <CheckCircle2 className="h-4 w-4 text-primary" /> {a}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          {/* LOCATION */}
+          <section className="mt-10">
+            <h2 className="font-display text-2xl font-semibold">Location</h2>
+            <div className="mt-4 overflow-hidden rounded-2xl border border-border">
+              <iframe
+                title="Property location"
+                src={`https://www.google.com/maps?q=${encodeURIComponent(p.location)}&output=embed`}
+                width="100%"
+                height="360"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          </section>
+        </div>
+
+        {/* INQUIRY ASIDE */}
+        <aside className="lg:sticky lg:top-24 lg:self-start">
+          <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
+            <h3 className="font-display text-xl font-semibold">Interested in this property?</h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Send a message — I'll respond within hours.
+            </p>
+            <div className="mt-5">
+              <InquiryForm propertyTitle={p.title} />
+            </div>
+            <div className="mt-5 flex gap-2">
+              <a
+                href={`tel:${CONSULTANT.phone}`}
+                className="btn-outline flex-1 px-4 py-2.5 text-sm"
+              >
+                <Phone className="h-4 w-4" /> Call
+              </a>
+              <a
+                href={waLink(`Hi, I'm interested in ${p.title}.`)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-whatsapp flex-1"
+              >
+                <MessageCircle className="h-4 w-4" /> WhatsApp
+              </a>
+            </div>
+          </div>
+        </aside>
+      </div>
+
+      {/* RELATED */}
+      {related.length > 0 && (
+        <section className="container-x mt-20">
+          <h2 className="font-display text-2xl font-semibold">You may also like</h2>
+          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {related.map((x) => (
+              <PropertyCard key={x.id} p={x} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* STICKY MOBILE BAR */}
+      <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-border bg-background/95 p-3 backdrop-blur md:hidden">
+        <div className="grid grid-cols-3 gap-2">
+          <a href={`tel:${CONSULTANT.phone}`} className="btn-outline justify-center py-2.5 text-xs">
+            <Phone className="h-4 w-4" /> Call
+          </a>
+          <a
+            href={waLink(`Hi, I'm interested in ${p.title}.`)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-whatsapp justify-center text-xs"
+          >
+            <MessageCircle className="h-4 w-4" /> WhatsApp
+          </a>
+          <Link to="/contact" className="btn-primary justify-center text-xs">
+            <CalendarDays className="h-4 w-4" /> Visit
+          </Link>
+        </div>
+      </div>
+      <div className="h-20 md:hidden" />
+    </article>
+  );
+}
+
+function Row({ icon: Icon, label, value }: { icon: typeof Bed; label: string; value: string }) {
+  return (
+    <div className="flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3">
+      <span className="inline-flex items-center gap-2 text-muted-foreground">
+        <Icon className="h-4 w-4 text-primary" /> {label}
+      </span>
+      <span className="font-medium">{value}</span>
+    </div>
+  );
+}
