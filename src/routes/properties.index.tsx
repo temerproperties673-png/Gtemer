@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import type { Lang } from "@/i18n/translations";
 import { useMemo, useState } from "react";
 import { Search, SlidersHorizontal, X } from "lucide-react";
 import { PropertyCard } from "@/components/site/PropertyCard";
@@ -6,30 +7,65 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Property } from "@/data/properties";
 
 export const Route = createFileRoute("/properties/")({
-  loader: async () => {
+  validateSearch: (search: Record<string, unknown>): { lang?: Lang } => {
+    return {
+      lang: (search.lang as Lang) || undefined,
+    };
+  },
+  loaderDeps: ({ search }) => ({
+    lang: search.lang,
+  }),
+  loader: async ({ deps }) => {
     const { data } = await supabase
       .from("properties")
       .select("*")
       .eq("published", true)
       .order("created_at", { ascending: false });
-    return { properties: (data || []) as Property[] };
+    return { properties: (data || []) as Property[], search: deps };
   },
-  head: () => ({
-    meta: [
-      { title: "Verified Properties for Sale in Addis Ababa — Addis Property Market" },
-      {
-        name: "description",
-        content:
-          "Browse all available apartments, villas and commercial spaces represented by your Temer Properties consultant.",
-      },
-      { property: "og:title", content: "Verified Properties for Sale in Addis Ababa — Addis Property Market" },
-      { property: "og:description", content: "Browse verified listings across Addis Ababa." },
-      { property: "og:url", content: "https://addispropertymarket.com/properties" },
-      { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
-      { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
-    ],
-    links: [{ rel: "canonical", href: "https://addispropertymarket.com/properties" }],
-  }),
+  head: ({ loaderData }) => {
+    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
+
+    const titles: Record<Lang, string> = {
+      en: "Verified Properties for Sale in Addis Ababa — Addis Property Market",
+      am: "የተረጋገጡ የሽያጭ ንብረቶች በአዲስ አበባ — አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Qabeenyota Mirkanaajee Finfinnee keessatti — Addis Property Market",
+      ti: "ዝተረጋገጹ ናይ መሸጣ ንብረታት ኣብ ኣዲስ ኣበባ — ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Guryaha la Xaqiijiyay ee Addis Ababa — Addis Property Market",
+    };
+
+    const descriptions: Record<Lang, string> = {
+      en: "Browse all available apartments, villas and commercial spaces represented by your Temer Properties consultant.",
+      am: "በቴምር ፕሮፐርቲስ የሽያጭ አማካሪ የሚወከሉትን ሁሉንም አፓርትመንቶች፣ ቪላዎች እና የንግድ ቦታዎች ያስሱ።",
+      om: "Qabeenyota daldalaa, apaartamaa fi viilaa Teemer properties consultant bakka bu'een jiran hunda ilaali.",
+      ti: "ብቴምር ፕሮፐርቲስ ኣማኻሪ ዝቐርቡ ኩሎም ኣፓርትመንትታት፣ ቪላታትን ናይ ንግዲ ቦታታትን ርኣዩ።",
+      so: "Eeg dhamaan dabaqyada, viilooyinka iyo goobaha ganacsiga ee uu ku dhawaaqay wakiilkaaga Temer Properties.",
+    };
+
+    const ogTitle = titles[activeLang];
+    const ogDesc = descriptions[activeLang];
+
+    return {
+      meta: [
+        { title: ogTitle },
+        { name: "description", content: ogDesc },
+        { property: "og:title", content: ogTitle },
+        { property: "og:description", content: ogDesc },
+        { property: "og:url", content: "https://addispropertymarket.com/properties" },
+        { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
+        { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+      ],
+      links: [
+        { rel: "canonical", href: "https://addispropertymarket.com/properties" },
+        { rel: "alternate", hreflang: "en", href: "https://addispropertymarket.com/properties?lang=en" },
+        { rel: "alternate", hreflang: "am", href: "https://addispropertymarket.com/properties?lang=am" },
+        { rel: "alternate", hreflang: "om", href: "https://addispropertymarket.com/properties?lang=om" },
+        { rel: "alternate", hreflang: "ti", href: "https://addispropertymarket.com/properties?lang=ti" },
+        { rel: "alternate", hreflang: "so", href: "https://addispropertymarket.com/properties?lang=so" },
+        { rel: "alternate", hreflang: "x-default", href: "https://addispropertymarket.com/properties" },
+      ],
+    };
+  },
   component: PropertiesIndex,
 });
 

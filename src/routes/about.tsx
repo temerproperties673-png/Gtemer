@@ -3,26 +3,62 @@ import { Phone, Mail, MapPin, MessageCircle, Award, Building2, Users, Star } fro
 import { CONSULTANT, waLink } from "@/data/properties";
 import { useLanguage } from "@/i18n/LanguageContext";
 
+import type { Lang } from "@/i18n/translations";
+
 export const Route = createFileRoute("/about")({
-  head: () => ({
-    meta: [
-      { title: "About Us — Addis Property Market" },
-      {
-        name: "description",
-        content:
-          "Temer Properties has been transforming the real estate landscape in Ethiopia since 2010 EC. Discover our completed and ongoing residential and commercial developments.",
-      },
-      { property: "og:title", content: "About Us — Addis Property Market" },
-      {
-        property: "og:description",
-        content:
-          "Successfully completed over 10 major projects, delivering more than 350 quality apartment units and modern homes in top locations in Addis Ababa.",
-      },
-      { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
-      { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
-    ],
-    links: [{ rel: "canonical", href: "https://addispropertymarket.com/about" }],
+  validateSearch: (search: Record<string, unknown>): { lang?: Lang } => {
+    return {
+      lang: (search.lang as Lang) || undefined,
+    };
+  },
+  loaderDeps: ({ search }) => ({
+    lang: search.lang,
   }),
+  loader: ({ deps }) => {
+    return { search: deps };
+  },
+  head: ({ loaderData }) => {
+    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
+
+    const titles: Record<Lang, string> = {
+      en: "About Us — Addis Property Market",
+      am: "ስለ እኛ — አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Waa'ee Keenya — Addis Property Market",
+      ti: "ብዛዕባና — ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Nagu Saabsan — Addis Property Market",
+    };
+
+    const descriptions: Record<Lang, string> = {
+      en: "Temer Properties has been transforming the real estate landscape in Ethiopia since 2010 EC. Discover our completed and ongoing residential and commercial developments.",
+      am: "ቴምር ፕሮፐርቲስ ከ2010 ዓ.ም ጀምሮ በኢትዮጵያ የሪል ስቴት ዘርፍን እየቀየርን እንገኛለን። የመኖሪያ አፓርትመንቶች እና የንግድ ቦታዎችን ይመልከቱ።",
+      om: "Teemer Properties bara 2010 EC irraa jalqabee Itoophiyaa keessatti qabeenya lafaa jijjiiraa jira. Apaartamaa fi daldala keenya ilaalii.",
+      ti: "ቴምር ፕሮፐርቲስ ካብ 2010 ዓ.ም ጀሚርና ኣብ ኢትዮጵያ ናይ ሪል ስቴት ጽላት ንቕይር ኣለና። መኖሪያታትን ናይ ንግዲ ቦታታትናን ርኣዩ።",
+      so: "Temer Properties waxay wax ka beddeleysaa qeybta guryaha ee Itoobiya tan iyo 2010 EC. Eeg dabaqyada iyo dukaamada ganacsi ee aan dhisnay.",
+    };
+
+    const ogTitle = titles[activeLang];
+    const ogDesc = descriptions[activeLang];
+
+    return {
+      meta: [
+        { title: ogTitle },
+        { name: "description", content: ogDesc },
+        { property: "og:title", content: ogTitle },
+        { property: "og:description", content: ogDesc },
+        { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
+        { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+      ],
+      links: [
+        { rel: "canonical", href: "https://addispropertymarket.com/about" },
+        { rel: "alternate", hreflang: "en", href: "https://addispropertymarket.com/about?lang=en" },
+        { rel: "alternate", hreflang: "am", href: "https://addispropertymarket.com/about?lang=am" },
+        { rel: "alternate", hreflang: "om", href: "https://addispropertymarket.com/about?lang=om" },
+        { rel: "alternate", hreflang: "ti", href: "https://addispropertymarket.com/about?lang=ti" },
+        { rel: "alternate", hreflang: "so", href: "https://addispropertymarket.com/about?lang=so" },
+        { rel: "alternate", hreflang: "x-default", href: "https://addispropertymarket.com/about" },
+      ].filter((val, id, self) => self.findIndex(t => t.hreflang === val.hreflang && t.href === val.href) === id), // filter out duplicates just in case
+    };
+  },
   component: About,
 });
 

@@ -16,7 +16,7 @@ import { PropertyCard } from "@/components/site/PropertyCard";
 import { ProjectsSection } from "@/components/site/ProjectsSection";
 import { useT, useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
-import { type TranslationKey } from "@/i18n/translations";
+import type { TranslationKey, Lang } from "@/i18n/translations";
 import {
   Accordion,
   AccordionItem,
@@ -25,7 +25,15 @@ import {
 } from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/")({
-  loader: async () => {
+  validateSearch: (search: Record<string, unknown>): { lang?: Lang } => {
+    return {
+      lang: (search.lang as Lang) || undefined,
+    };
+  },
+  loaderDeps: ({ search }) => ({
+    lang: search.lang,
+  }),
+  loader: async ({ deps }) => {
     const { data } = await supabase
       .from("properties")
       .select("*")
@@ -33,29 +41,59 @@ export const Route = createFileRoute("/")({
       .eq("featured", true)
       .order("created_at", { ascending: false })
       .limit(6);
-    return { featured: (data || []) as Property[] };
+    return { featured: (data || []) as Property[], search: deps };
   },
-  head: () => ({
-    meta: [
-      { title: "Addis Property Market — Premium Real Estate in Addis Ababa" },
-      {
-        name: "description",
-        content:
-          "Browse verified apartments, villas, commercial spaces and investment opportunities in Addis Ababa. Direct developer access and secure payment plans.",
-      },
-      {
-        property: "og:title",
-        content: "Addis Property Market — Premium Real Estate in Addis Ababa",
-      },
-      {
-        property: "og:description",
-        content:
-          "Verified listings in Bole, Piassa, and Ayat. Direct developer access. Transparent pricing.",
-      },
-      { property: "og:url", content: "https://addispropertymarket.com" },
-    ],
-    links: [{ rel: "canonical", href: "https://addispropertymarket.com" }],
-    scripts: [
+  head: ({ loaderData }) => {
+    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
+
+    const titles: Record<Lang, string> = {
+      en: "Addis Property Market — Premium Real Estate in Addis Ababa",
+      am: "አዲስ ፕሮፐርቲ ማርኬት — በአዲስ አበባ ዋና ዋና የሪል ስቴት ንብረቶች",
+      om: "Addis Property Market — Qabeenya lafaa Finfinnee keessatti",
+      ti: "ኣዲስ ፕሮፐርቲ ማርኬት — ኣብ ኣዲስ ኣበባ ዝበለጹ ናይ ሪል ስቴት ንብረታት",
+      so: "Addis Property Market — Guryaha Casriga ah ee Addis Ababa",
+    };
+
+    const descriptions: Record<Lang, string> = {
+      en: "Browse verified apartments, villas, commercial spaces and investment opportunities in Addis Ababa. Direct developer access and secure payment plans.",
+      am: "በአዲስ አበባ የተረጋገጡ አፓርትመንቶች፣ ቪላዎች፣ የንግድ ቦታዎች እና የኢንቨስትመንት እድሎችን ያስሱ። ከሪል ስቴት አልሚዎች ጋር ቀጥተኛ ግንኙነት እና አስተማማኝ የክፍያ አማራጮች።",
+      om: "Apaartamaa, viilaa, iddoowwan daldalaa fi carraaqqii investimentii Finfinnee keessatti mirkanaaje barbaadi. Kallattiin ijaaraa irraa fi kaffaltii amansiisaa.",
+      ti: "ኣብ ኣዲስ ኣበባ ዝተረጋገጹ ኣፓርትመንትታት፣ ቪላታት፣ ናይ ንግዲ ቦታታትን ናይ ኢንቨስትመንት ዕድላትን ርኣዩ። ቀጥታ ካብ ኣማዕበልቲ ርክብን ውሑስ ናይ ክፍሊት መደባትን።",
+      so: "Eeg dabaqyo, viilooyin, goobo ganacsi iyo fursado maalgashi oo la xaqiijiyay Addis Ababa. Toos ula xiriir shirkadaha dhismaha iyo lacag bixin aamin ah.",
+    };
+
+    const ogDescriptions: Record<Lang, string> = {
+      en: "Verified listings in Bole, Piassa, and Ayat. Direct developer access. Transparent pricing.",
+      am: "በቦሌ፣ ፒያሳ እና አያት የተረጋገጡ ንብረቶች። ከአልሚዎች ቀጥተኛ ግንኙነት። ግልጽ ዋጋ።",
+      om: "Qabeenyota mirkanaa'an Boolee, Piyaasaa fi Ayaat keessatti. Kallattiin ijaaraa quunnamaa.",
+      ti: "ኣብ ቦሌ፣ ፒያሳን ኣያትን ዝተረጋገጹ ንብረታት። ቀጥታ ካብ ኣማዕበልቲ ርክብ። ግልጺ ዋጋ።",
+      so: "Guryaha la xaqiijiyay ee Bole, Piassa iyo Ayat. Toos ula xiriir shirkadaha. Qiimo cad.",
+    };
+
+    const title = titles[activeLang];
+    const desc = descriptions[activeLang];
+    const ogDesc = ogDescriptions[activeLang];
+
+    return {
+      meta: [
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: ogDesc },
+        { property: "og:url", content: "https://addispropertymarket.com" },
+        { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
+        { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+      ],
+      links: [
+        { rel: "canonical", href: "https://addispropertymarket.com" },
+        { rel: "alternate", hreflang: "en", href: "https://addispropertymarket.com?lang=en" },
+        { rel: "alternate", hreflang: "am", href: "https://addispropertymarket.com?lang=am" },
+        { rel: "alternate", hreflang: "om", href: "https://addispropertymarket.com?lang=om" },
+        { rel: "alternate", hreflang: "ti", href: "https://addispropertymarket.com?lang=ti" },
+        { rel: "alternate", hreflang: "so", href: "https://addispropertymarket.com?lang=so" },
+        { rel: "alternate", hreflang: "x-default", href: "https://addispropertymarket.com" },
+      ],
+      scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -106,7 +144,8 @@ export const Route = createFileRoute("/")({
         }),
       },
     ],
-  }),
+  };
+},
   component: Home,
 });
 

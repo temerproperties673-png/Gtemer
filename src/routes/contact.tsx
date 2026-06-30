@@ -3,26 +3,62 @@ import { Phone, Mail, MapPin, MessageCircle } from "lucide-react";
 import { CONSULTANT, waLink } from "@/data/properties";
 import { InquiryForm } from "@/components/site/InquiryForm";
 
+import type { Lang } from "@/i18n/translations";
+
 export const Route = createFileRoute("/contact")({
-  head: () => ({
-    meta: [
-      { title: "Contact Us — Addis Property Market" },
-      {
-        name: "description",
-        content:
-          "Get in touch with your Temer Properties consultant. Call, WhatsApp, email or book a site visit.",
-      },
-      { property: "og:title", content: "Contact Us — Addis Property Market" },
-      {
-        property: "og:description",
-        content: "Reach out to schedule a private property consultation in Addis Ababa.",
-      },
-      { property: "og:url", content: "https://addispropertymarket.com/contact" },
-      { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
-      { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
-    ],
-    links: [{ rel: "canonical", href: "https://addispropertymarket.com/contact" }],
-    scripts: [
+  validateSearch: (search: Record<string, unknown>): { lang?: Lang } => {
+    return {
+      lang: (search.lang as Lang) || undefined,
+    };
+  },
+  loaderDeps: ({ search }) => ({
+    lang: search.lang,
+  }),
+  loader: ({ deps }) => {
+    return { search: deps };
+  },
+  head: ({ loaderData }) => {
+    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
+
+    const titles: Record<Lang, string> = {
+      en: "Contact Us — Addis Property Market",
+      am: "ያግኙን — አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Nu Quunnamaa — Addis Property Market",
+      ti: "ርኸቡና — ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Nala soo Xiriir — Addis Property Market",
+    };
+
+    const descriptions: Record<Lang, string> = {
+      en: "Get in touch with your Temer Properties consultant. Call, WhatsApp, email or book a site visit.",
+      am: "ከቴምር ፕሮፐርቲስ የሽያጭ አማካሪ ጋር ይገናኙ። በስልክ፣ በዋትስኣፕ፣ በኢሜይል ያግኙን ወይም የአየር ላይ ጉብኝት ይያዙ።",
+      om: "Gareen gurgurtaa Teemer properties quunnamaa. Bilbila, WhatsApp, email ykn daawwannaa qabadhaa.",
+      ti: "ምስ ቴምር ፕሮፐርቲስ ክፍሊ መሸጣ ርክብ ግበሩ። ብስልኪ፣ ብዋትስኣፕ፣ ብኢመይል ርኸቡና ወይ ዑደት ይሓዙ።",
+      so: "La xiriir wakiilka iibka ee Temer Properties. Wicitaan, WhatsApp, email ama ballanso booqasho.",
+    };
+
+    const ogTitle = titles[activeLang];
+    const ogDesc = descriptions[activeLang];
+
+    return {
+      meta: [
+        { title: ogTitle },
+        { name: "description", content: ogDesc },
+        { property: "og:title", content: ogTitle },
+        { property: "og:description", content: ogDesc },
+        { property: "og:url", content: "https://addispropertymarket.com/contact" },
+        { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
+        { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+      ],
+      links: [
+        { rel: "canonical", href: "https://addispropertymarket.com/contact" },
+        { rel: "alternate", hreflang: "en", href: "https://addispropertymarket.com/contact?lang=en" },
+        { rel: "alternate", hreflang: "am", href: "https://addispropertymarket.com/contact?lang=am" },
+        { rel: "alternate", hreflang: "om", href: "https://addispropertymarket.com/contact?lang=om" },
+        { rel: "alternate", hreflang: "ti", href: "https://addispropertymarket.com/contact?lang=ti" },
+        { rel: "alternate", hreflang: "so", href: "https://addispropertymarket.com/contact?lang=so" },
+        { rel: "alternate", hreflang: "x-default", href: "https://addispropertymarket.com/contact" },
+      ],
+      scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -51,7 +87,8 @@ export const Route = createFileRoute("/contact")({
         }),
       },
     ],
-  }),
+  };
+},
   component: Contact,
 });
 

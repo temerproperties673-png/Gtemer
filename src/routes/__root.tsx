@@ -16,6 +16,7 @@ import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { CONSULTANT } from "@/data/properties";
+import type { Lang } from "@/i18n/translations";
 
 function NotFoundComponent() {
   return (
@@ -68,6 +69,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  validateSearch: (search: Record<string, unknown>): { lang?: Lang } => {
+    return {
+      lang: (search.lang as Lang) || undefined,
+    };
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },
@@ -161,10 +167,11 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const search = Route.useSearch();
 
   return (
     <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
+      <LanguageProvider initialLang={search.lang}>
         <div className="flex min-h-screen flex-col">
           <Header />
           <main className="flex-1">

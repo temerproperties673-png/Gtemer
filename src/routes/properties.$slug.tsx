@@ -18,9 +18,13 @@ import { InquiryForm } from "@/components/site/InquiryForm";
 import { PropertyCard } from "@/components/site/PropertyCard";
 import { supabase } from "@/integrations/supabase/client";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import type { Lang } from "@/i18n/translations";
 
 export const Route = createFileRoute("/properties/$slug")({
-  loader: async ({ params }): Promise<{ property: Property; related: Property[] }> => {
+  loaderDeps: ({ search }) => ({
+    lang: search.lang,
+  }),
+  loader: async ({ params, deps }): Promise<{ property: Property; related: Property[]; search: any }> => {
     const { data: property } = await supabase
       .from("properties")
       .select("*")
@@ -37,28 +41,58 @@ export const Route = createFileRoute("/properties/$slug")({
       .neq("id", property.id)
       .limit(3);
 
-    return { property: property as Property, related: (related || []) as Property[] };
+    return { property: property as Property, related: (related || []) as Property[], search: deps };
+  },
+  validateSearch: (search: Record<string, unknown>): { lang?: Lang } => {
+    return {
+      lang: (search.lang as Lang) || undefined,
+    };
   },
   head: ({ loaderData, params }) => {
+    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
     const p = loaderData?.property;
     const url = `https://addispropertymarket.com/properties/${params.slug}`;
+
+    const branding: Record<Lang, string> = {
+      en: "Addis Property Market",
+      am: "አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Addis Property Market",
+      ti: "ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Addis Property Market",
+    };
+
+    const details: Record<Lang, string> = {
+      en: p ? `${p.title} in ${p.location}. Area: ${p.area}. Contact for pricing and site visit.` : "Property listing",
+      am: p ? `${p.title} በ${p.location}። ስፋት፡ ${p.area}። ለዋጋ እና ለቦታ ጉብኝት ያግኙን።` : "የንብረት ዝርዝር",
+      om: p ? `${p.title} keessatti ${p.location}. Bal'ina: ${p.area}. Gatiifi daawwannaa bakkaaf quunnamaa.` : "Tarree qabeenyaa",
+      ti: p ? `${p.title} ኣብ ${p.location}። ስፋት፡ ${p.area}። ንዋጋን ዑደትን ርኸቡና።` : "ዝርዝር ንብረት",
+      so: p ? `${p.title} oo ku yaal ${p.location}. Baaxada: ${p.area}. Nala soo xiriir qiimaha iyo booqashada.` : "Liiska guriga",
+    };
+
+    const brandName = branding[activeLang];
+    const desc = details[activeLang];
+    const title = p ? `${p.title} — ${brandName}` : `Property — ${brandName}`;
+
     return {
       meta: [
-        { title: p ? `${p.title} — Addis Property Market` : "Property — Addis Property Market" },
-        {
-          name: "description",
-          content: p
-            ? `${p.title} in ${p.location}. ${p.area}. Contact for pricing and site visit.`
-            : "Property listing",
-        },
-        { property: "og:title", content: p?.title ?? "Property" },
-        { property: "og:description", content: p?.description?.slice(0, 160) ?? "" },
+        { title },
+        { name: "description", content: desc },
+        { property: "og:title", content: title },
+        { property: "og:description", content: p?.description?.slice(0, 160) ?? desc },
         { property: "og:image", content: p?.cover_image ?? "" },
         { property: "og:url", content: url },
         { property: "og:type", content: "product" },
         { name: "twitter:image", content: p?.cover_image ?? "" },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [
+        { rel: "canonical", href: url },
+        { rel: "alternate", hreflang: "en", href: `${url}?lang=en` },
+        { rel: "alternate", hreflang: "am", href: `${url}?lang=am` },
+        { rel: "alternate", hreflang: "om", href: `${url}?lang=om` },
+        { rel: "alternate", hreflang: "ti", href: `${url}?lang=ti` },
+        { rel: "alternate", hreflang: "so", href: `${url}?lang=so` },
+        { rel: "alternate", hreflang: "x-default", href: url },
+      ],
       scripts: p
         ? [
             {
