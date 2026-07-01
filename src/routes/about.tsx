@@ -21,11 +21,11 @@ export const Route = createFileRoute("/about")({
     const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
 
     const titles: Record<Lang, string> = {
-      en: "About Us — Addis Property Market",
-      am: "ስለ እኛ — አዲስ ፕሮፐርቲ ማርኬት",
-      om: "Waa'ee Keenya — Addis Property Market",
-      ti: "ብዛዕባና — ኣዲስ ፕሮፐርቲ ማርኬት",
-      so: "Nagu Saabsan — Addis Property Market",
+      en: "About Temer Properties | Addis Property Market",
+      am: "ስለ ቴምር ፕሮፐርቲስ | አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Waa'ee Temer Properties | Addis Property Market",
+      ti: "ብዛዕባ ቴምር ፕሮፐርቲስ | ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Ku Saabsan Temer Properties | Addis Property Market",
     };
 
     const descriptions: Record<Lang, string> = {
@@ -81,7 +81,7 @@ const content = {
     expertiseTitle: "Areas of Expertise",
     expertiseList: [
       "Residential Apartments",
-      "Luxury Villas",
+      "Modern Family Homes",
       "Commercial Spaces",
       "Investment Properties",
       "Strategic Locations",
@@ -111,7 +111,7 @@ const content = {
     expertiseTitle: "ዋና ዋና የስራ ዘርፎች",
     expertiseList: [
       "የመኖሪያ አፓርትመንቶች",
-      "ቅንጦት ቪላዎች",
+      "ዘመናዊ መኖሪያ ቤቶች",
       "የንግድ ቦታዎች",
       "የኢንቨስትመንት ንብረቶች",
       "ስልታዊ ቦታዎች",
@@ -141,7 +141,7 @@ const content = {
     expertiseTitle: "Dandeettii Keenya",
     expertiseList: [
       "Apaartamoota Jireenyaa",
-      "Viilaa Hifame",
+      "Manneen Ammayyaa",
       "Iddoowwan Daldalaa",
       "Qabeenya Investimentii",
       "Bakkeewwan Gaarii",
@@ -171,7 +171,7 @@ const content = {
     expertiseTitle: "ቀንዲ ናይ ስራሕ ዓውድታት",
     expertiseList: [
       "መኖሪያ ኣፓርትመንትታት",
-      "ቅንጦት ቪላታት",
+      "ዘመናዊ መኖሪያታት",
       "ናይ ንግዲ ቦታታት",
       "ናይ ኢንቨስትመንት ንብረት",
       "ስልታዊ ቦታታት",
@@ -201,7 +201,7 @@ const content = {
     expertiseTitle: "Qeybaha aan ku Fiicanahay",
     expertiseList: [
       "Dabaqyada Deegaanka",
-      "Guryaha Luxury-ga ah",
+      "Guryaha Qoyska ee Casriga ah",
       "Goobaha Ganacsiga",
       "Hantida Maalgashiga",
       "Goobaha Muhiimka ah",

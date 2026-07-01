@@ -20,7 +20,7 @@ The application connects to Supabase via [client.ts](file:///c:/Users/jonathan/D
 
 ### Core Tables
 
-1. **`properties`**: Individual real estate listings (apartments, commercial spaces, villas).
+1. **`properties`**: Individual real estate listings (apartments, commercial spaces, homes).
    - Key Columns: `id`, `slug` (URL identifier), `title`, `location`, `property_type` (Residential/Commercial), `status` (For Sale/New Offer/Active), `bedrooms`, `bathrooms`, `area`, `developer`, `completion_date`, `description`, `amenities` (array), `cover_image`, `gallery` (array), `featured`, `published`.
 2. **`projects`**: High-level master development projects (rendered in [ProjectsSection.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/components/site/ProjectsSection.tsx)).
    - Key Columns: `id`, `title`, `description`, `location`, `status` (Ongoing/Upcoming/Completed), `cover_image`, `gallery`, `units`, `year`, `featured`, `published`, `sort_order`.
@@ -38,7 +38,7 @@ All pages are located in [src/routes](file:///c:/Users/jonathan/Documents/Gtemer
 - **Homepage**: [index.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/index.tsx) renders the landing page, fetches and lists featured properties, displays business statistics, and loads the [ProjectsSection](file:///c:/Users/jonathan/Documents/Gtemer/src/components/site/ProjectsSection.tsx) component.
 - **Properties Directory**: [properties.index.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/properties.index.tsx) loads all published listings and provides filters (Property Type, Location, Developer, Bedrooms, Bathrooms, and Status) along with a text-search bar.
 - **Property Detail**: [properties.$slug.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/properties.$slug.tsx) renders a single property, detailed gallery carousel, completion/developer status, features, similar listings, and the [InquiryForm](file:///c:/Users/jonathan/Documents/Gtemer/src/components/site/InquiryForm.tsx).
-- **About page**: [about.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/about.tsx) presents consultant information (Yonas Tesfaye), expertise fields, and direct WhatsApp buttons.
+- **About page**: [about.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/about.tsx) presents sales agent information (Yonas Tesfaye), expertise fields, and direct WhatsApp buttons.
 - **Contact page**: [contact.tsx](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/contact.tsx) details direct phone, WhatsApp links, office location map, and a general inquiry form.
 - **Sitemap**: [sitemap[.]xml.ts](file:///c:/Users/jonathan/Documents/Gtemer/src/routes/sitemap%5B.%5Dxml.ts) contains a server route handler returning a dynamically updated XML sitemap of all published listings for search engines (using the canonical domain `https://addispropertymarket.com`).
 
@@ -56,7 +56,7 @@ All pages are located in [src/routes](file:///c:/Users/jonathan/Documents/Gtemer
 - Input is validated with `zod` and written directly to the `leads` table in Supabase.
 - Successful submissions display a notification via `sonner` (`toast.success`).
 
-### 3. Direct Consultant Contacts
+### 3. Direct Sales Agent Contacts
 
 - Phone numbers and WhatsApp redirections reference the `CONSULTANT` configurations in [properties.ts](file:///c:/Users/jonathan/Documents/Gtemer/src/data/properties.ts).
 - The `waLink(message)` helper formats links redirecting users to the WhatsApp application with pre-populated contextual messages.

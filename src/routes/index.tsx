@@ -47,27 +47,27 @@ export const Route = createFileRoute("/")({
     const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
 
     const titles: Record<Lang, string> = {
-      en: "Addis Property Market — Premium Real Estate in Addis Ababa",
-      am: "አዲስ ፕሮፐርቲ ማርኬት — በአዲስ አበባ ዋና ዋና የሪል ስቴት ንብረቶች",
-      om: "Addis Property Market — Qabeenya lafaa Finfinnee keessatti",
-      ti: "ኣዲስ ፕሮፐርቲ ማርኬት — ኣብ ኣዲስ ኣበባ ዝበለጹ ናይ ሪል ስቴት ንብረታት",
-      so: "Addis Property Market — Guryaha Casriga ah ee Addis Ababa",
+      en: "Temer Properties & Homes — Addis Property Market",
+      am: "ቴምር ፕሮፐርቲስ እና ቤቶች — አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Qabeenya Teemer Properties — Addis Property Market",
+      ti: "ቴምር ፕሮፐርቲስን ገዛውትን — ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Guryaha Temer Properties — Addis Property Market",
     };
 
     const descriptions: Record<Lang, string> = {
-      en: "Browse verified apartments, villas, commercial spaces and investment opportunities in Addis Ababa. Direct developer access and secure payment plans.",
-      am: "በአዲስ አበባ የተረጋገጡ አፓርትመንቶች፣ ቪላዎች፣ የንግድ ቦታዎች እና የኢንቨስትመንት እድሎችን ያስሱ። ከሪል ስቴት አልሚዎች ጋር ቀጥተኛ ግንኙነት እና አስተማማኝ የክፍያ አማራጮች።",
-      om: "Apaartamaa, viilaa, iddoowwan daldalaa fi carraaqqii investimentii Finfinnee keessatti mirkanaaje barbaadi. Kallattiin ijaaraa irraa fi kaffaltii amansiisaa.",
-      ti: "ኣብ ኣዲስ ኣበባ ዝተረጋገጹ ኣፓርትመንትታት፣ ቪላታት፣ ናይ ንግዲ ቦታታትን ናይ ኢንቨስትመንት ዕድላትን ርኣዩ። ቀጥታ ካብ ኣማዕበልቲ ርክብን ውሑስ ናይ ክፍሊት መደባትን።",
-      so: "Eeg dabaqyo, viilooyin, goobo ganacsi iyo fursado maalgashi oo la xaqiijiyay Addis Ababa. Toos ula xiriir shirkadaha dhismaha iyo lacag bixin aamin ah.",
+      en: "Find verified Temer Properties apartments, modern homes, and commercial spaces in Addis Ababa. Access direct sales agent pricing and fixed payment plans.",
+      am: "በአዲስ አበባ የተረጋገጡ የቴምር ፕሮፐርቲስ አፓርትመንቶች፣ ዘመናዊ ቤቶች እና የንግድ ቦታዎችን ያግኙ። ቀጥተኛ የሽያጭ ወኪል ዋጋዎች እና ቋሚ የክፍያ እቅዶች።",
+      om: "Finfinnee keessatti apaartamaa fi manneen Teemer Properties mirkanaa'an argadhaa. Kallattiin gatii gurgurtaa fi kaffaltii dhaabbataa argadhaa.",
+      ti: "ኣብ ኣዲስ ኣበባ ዝተረጋገጹ ናይ ቴምር ፕሮፐርቲስ ኣፓርትመንትታት፣ ዘመናዊ ኣባይትን ቦታታትን ያግኙ። ቀጥታዊ ዋጋታት መሸጣን ቀዋሚ ክፍሊትን።",
+      so: "Ka hel guryo iyo dabaqyo la xaqiijiyay oo ay leedahay Temer Properties magaalada Addis Ababa. Toos ula xiriir wakiilka rasmiga ah.",
     };
 
     const ogDescriptions: Record<Lang, string> = {
-      en: "Verified listings in Bole, Piassa, and Ayat. Direct developer access. Transparent pricing.",
-      am: "በቦሌ፣ ፒያሳ እና አያት የተረጋገጡ ንብረቶች። ከአልሚዎች ቀጥተኛ ግንኙነት። ግልጽ ዋጋ።",
-      om: "Qabeenyota mirkanaa'an Boolee, Piyaasaa fi Ayaat keessatti. Kallattiin ijaaraa quunnamaa.",
-      ti: "ኣብ ቦሌ፣ ፒያሳን ኣያትን ዝተረጋገጹ ንብረታት። ቀጥታ ካብ ኣማዕበልቲ ርክብ። ግልጺ ዋጋ።",
-      so: "Guryaha la xaqiijiyay ee Bole, Piassa iyo Ayat. Toos ula xiriir shirkadaha. Qiimo cad.",
+      en: "Authorized Temer Properties sales agent. Verified apartments & homes in Ayat, Lebu, Lafto, Sarbet, and Piassa. No price hike guarantee.",
+      am: "የቴምር ፕሮፐርቲስ የተፈቀደ የሽያጭ ወኪል፡ በአያት፣ ሌቡ፣ ላፍቶ፣ ሳርቤት እና ፒያሳ የተረጋገጡ አፓርትመንቶች እና ቤቶች። ያለ ዋጋ ጭማሪ ዋስትና።",
+      om: "Gurgurtaa Qabeenya Teemer Properties. Apaartamaa fi manneen Ayat, Lebu, Lafto, Sarbet, fi Piassa keessatti mirkanaa'an.",
+      ti: "ፍቑድ ናይ ቴምር ፕሮፐርቲስ መሸጣ ተወካሊ። ኣብ አያት፣ ሌቡ፣ ላፍቶ፣ ሳርቤትን ፒያሳን ዝተረጋገጹ ኣፓርትመንትታትን ኣባይትን።",
+      so: "Wakiilka rasmiga ah ee Temer Properties. Guryo iyo dabaqyo la xaqiijiyay oo ku yaal Ayat, Lebu, Lafto, Sarbet iyo Piassa.",
     };
 
     const title = titles[activeLang];
@@ -94,58 +94,74 @@ export const Route = createFileRoute("/")({
         { rel: "alternate", hreflang: "x-default", href: "https://addispropertymarket.com" },
       ],
       scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: [
-            {
-              "@type": "Question",
-              name: "Which neighborhoods in Addis Ababa are best for investment?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Bole is highly sought-after for diaspora rentals and high yields. Sarbet is popular for families and embassies, Piassa is prime for commercial activity, and Ayat offers quieter, spacious residential apartments at more affordable prices.",
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: [
+              {
+                "@type": "Question",
+                name: "Which neighborhoods in Addis Ababa are best for investment?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Bole is highly sought-after for diaspora rentals and high yields. Sarbet is popular for families and embassies, Piassa is prime for commercial activity, and Ayat offers quieter, spacious residential apartments at more affordable prices.",
+                },
               },
-            },
-            {
-              "@type": "Question",
-              name: "How does the land leasehold system work in Addis Ababa?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "In Ethiopia, land is state-owned, so buyers purchase the building structures and long-term lease rights to the associated land (typically 50 to 99 years for residential developments in areas like Bole and Piassa). These leases are standard and renewable.",
+              {
+                "@type": "Question",
+                name: "How does the land leasehold system work in Addis Ababa?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "In Ethiopia, land is state-owned, so buyers purchase the building structures and long-term lease rights to the associated land (typically 50 to 99 years for residential developments in areas like Bole and Piassa). These leases are standard and renewable.",
+                },
               },
-            },
-            {
-              "@type": "Question",
-              name: "Can I purchase real estate remotely from abroad?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Yes, you do not need to be physically present. You can execute the entire purchase remotely by appointing a trusted representative via a Power of Attorney (POA). The POA must be legalized at your nearest Ethiopian Embassy or Consulate and registered in Addis Ababa.",
+              {
+                "@type": "Question",
+                name: "Can I purchase real estate remotely from abroad?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Yes, you do not need to be physically present. You can execute the entire purchase remotely by appointing a trusted representative via a Power of Attorney (POA). The POA must be legalized at your nearest Ethiopian Embassy or Consulate and registered in Addis Ababa.",
+                },
               },
-            },
-            {
-              "@type": "Question",
-              name: "What are the typical payment plans for off-plan apartments?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "Off-plan developments typically offer milestone-based payment plans. You start with a 10% to 30% down payment to secure the property. The remaining balance is split into installments tied to key construction phases (foundation, structural framing, finishing) over 1 to 3 years.",
+              {
+                "@type": "Question",
+                name: "What are the typical payment plans for off-plan apartments?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Off-plan developments typically offer milestone-based payment plans. You start with a 10% to 30% down payment to secure the property. The remaining balance is split into installments tied to key construction phases (foundation, structural framing, finishing) over 1 to 3 years.",
+                },
               },
-            },
-            {
-              "@type": "Question",
-              name: "How do developers handle utility and water reliability in new builds?",
-              acceptedAnswer: {
-                "@type": "Answer",
-                text: "To ensure reliable utilities, premium apartments (especially in Bole, Sarbet, and central districts) are built with dedicated backup water reservoirs, standby electrical generators, and centralized waste systems. Always look for projects with these features standard.",
+              {
+                "@type": "Question",
+                name: "How do developers handle utility and water reliability in new builds?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "To ensure reliable utilities, premium apartments (especially in Bole, Sarbet, and central districts) are built with dedicated backup water reservoirs, standby electrical generators, and centralized waste systems. Always look for projects with these features standard.",
+                },
               },
-            },
-          ],
-        }),
-      },
-    ],
-  };
-},
+              {
+                "@type": "Question",
+                name: "What projects are currently offered by Temer Properties in Addis Ababa?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Temer Properties has delivered over 10 major residential and commercial projects in prime areas of Addis Ababa, including Ayat, Lebu, Lafto, Sarbet, and Piassa. We offer luxury apartments and modern family homes in these key neighborhoods.",
+                },
+              },
+              {
+                "@type": "Question",
+                name: "Why is Temer Properties known for a 'no price hike' policy?",
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: "Unlike many developers in Ethiopia, Temer Properties commits to a fixed price guarantee in their sales contracts. Once you sign and make your initial down payment, your purchase price is locked, protecting you from construction inflation or sudden market hikes.",
+                },
+              },
+            ],
+          }),
+        },
+      ],
+    };
+  },
   component: Home,
 });
 
@@ -364,7 +380,7 @@ function Home() {
                   {
                     q: "Patient, knowledgeable and incredibly responsive. He found us our family home in three weeks.",
                     n: "Hanna G.",
-                    r: "Bole Villa Owner",
+                    r: "Bole Property Owner",
                   },
                   {
                     q: "I bought two commercial units sight-unseen from abroad. Every step was documented and on time.",
@@ -425,7 +441,7 @@ function Home() {
           </motion.div>
           <motion.div variants={fadeUp} className="w-full">
             <Accordion type="single" collapsible className="w-full space-y-4">
-              {[1, 2, 3, 4, 5].map((i) => (
+              {[1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <AccordionItem
                   key={i}
                   value={`item-${i}`}

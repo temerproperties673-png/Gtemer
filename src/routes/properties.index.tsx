@@ -27,19 +27,19 @@ export const Route = createFileRoute("/properties/")({
     const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
 
     const titles: Record<Lang, string> = {
-      en: "Verified Properties for Sale in Addis Ababa — Addis Property Market",
-      am: "የተረጋገጡ የሽያጭ ንብረቶች በአዲስ አበባ — አዲስ ፕሮፐርቲ ማርኬት",
-      om: "Qabeenyota Mirkanaajee Finfinnee keessatti — Addis Property Market",
-      ti: "ዝተረጋገጹ ናይ መሸጣ ንብረታት ኣብ ኣዲስ ኣበባ — ኣዲስ ፕሮፐርቲ ማርኬት",
-      so: "Guryaha la Xaqiijiyay ee Addis Ababa — Addis Property Market",
+      en: "Temer Properties for Sale in Addis Ababa — Addis Property Market",
+      am: "የቴምር ፕሮፐርቲስ ሽያጭ በአዲስ አበባ — አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Qabeenya Teemer Properties Gurgurtaa Finfinnee — Addis Property Market",
+      ti: "ናይ ቴምር ፕሮፐርቲስ መሸጣ ኣብ ኣዲስ ኣበባ — ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Guryaha Temer Properties ee Addis Ababa — Addis Property Market",
     };
 
     const descriptions: Record<Lang, string> = {
-      en: "Browse all available apartments, villas and commercial spaces represented by your Temer Properties consultant.",
-      am: "በቴምር ፕሮፐርቲስ የሽያጭ አማካሪ የሚወከሉትን ሁሉንም አፓርትመንቶች፣ ቪላዎች እና የንግድ ቦታዎች ያስሱ።",
-      om: "Qabeenyota daldalaa, apaartamaa fi viilaa Teemer properties consultant bakka bu'een jiran hunda ilaali.",
-      ti: "ብቴምር ፕሮፐርቲስ ኣማኻሪ ዝቐርቡ ኩሎም ኣፓርትመንትታት፣ ቪላታትን ናይ ንግዲ ቦታታትን ርኣዩ።",
-      so: "Eeg dhamaan dabaqyada, viilooyinka iyo goobaha ganacsiga ee uu ku dhawaaqay wakiilkaaga Temer Properties.",
+      en: "Browse verified apartments, modern homes, and commercial spaces from Temer Properties in Addis Ababa. Direct sales agent listings.",
+      am: "በአዲስ አበባ የቴምር ፕሮፐርቲስ የተረጋገጡ አፓርትመንቶች፣ ዘመናዊ ቤቶች እና የንግድ ቦታዎችን ያስሱ። ከሽያጭ ወኪል የሚቀርቡ ቀጥተኛ ዝርዝሮች።",
+      om: "Guryaha, dabaqyada fi iddoowwan daldalaa Teemer Properties Finfinnee keessatti mirkanaa'an ilaala. Tarree kallattii gurgurtaa.",
+      ti: "ኣብ ኣዲስ ኣበባ ዝተረጋገጹ ናይ ቴምር ፕሮፐርቲስ ኣፓርትመንትታት፣ ዘመናዊ ኣባይትን ቦታታትን ርኣዩ። ቀጥታዊ መሸጣ።",
+      so: "Eeg dabaqyada iyo guryaha la xaqiijiyay ee Temer Properties ka bixiso Addis Ababa. Liisaska wakiilka rasmiga ah.",
     };
 
     const ogTitle = titles[activeLang];

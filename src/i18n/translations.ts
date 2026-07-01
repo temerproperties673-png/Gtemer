@@ -80,14 +80,20 @@ export const translations = {
     "faq.q5": "How do developers handle utility and water reliability in new builds?",
     "faq.a5":
       "To ensure reliable utilities, premium apartments (especially in Bole, Sarbet, and central districts) are built with dedicated backup water reservoirs, standby electrical generators, and centralized waste systems. Always look for projects with these features standard.",
+    "faq.q6": "What projects are currently offered by Temer Properties in Addis Ababa?",
+    "faq.a6":
+      "Temer Properties has delivered over 10 major residential and commercial projects in prime areas of Addis Ababa, including Ayat, Lebu, Lafto, Sarbet, and Piassa. We offer luxury apartments and modern family homes in these key neighborhoods.",
+    "faq.q7": "Why is Temer Properties known for a 'no price hike' policy?",
+    "faq.a7":
+      "Unlike many developers in Ethiopia, Temer Properties commits to a fixed price guarantee in their sales contracts. Once you sign and make your initial down payment, your purchase price is locked, protecting you from construction inflation or sudden market hikes.",
 
     // Footer
     "footer.tagline":
-      "Helping first-time buyers navigate the Addis Ababa market without the stress. Verified apartments, villas, commercial spaces and investment opportunities across ETHIOPIA — represented by an authorized Temer Properties sales",
+      "Helping first-time buyers navigate the Addis Ababa market without the stress. Verified apartments, homes, commercial spaces and investment opportunities across ETHIOPIA — represented by an authorized Temer Properties sales agent",
     "footer.explore": "Explore",
     "footer.contact": "Contact",
     "footer.rights": "All rights reserved.",
-    "footer.affiliate": "Independent consultant — affiliated with Temer Properties.",
+    "footer.affiliate": "Independent agent — affiliated with Temer Properties.",
   },
   am: {
     // Nav
@@ -165,14 +171,20 @@ export const translations = {
     "faq.q5": "አዲስ በሚገነቡ ህንፃዎች ውስጥ የውሃ እና መብራት መቆራረጥ ችግር እንዴት ይፈታል?",
     "faq.a5":
       "አስተማማኝ አገልግሎት ለማረጋገጥ፣ ጥራት ያላቸው አፓርትመንቶች (በተለይ በቦሌ፣ ሳርቤት እና መካከለኛ አውራጃዎች) ከተዘጋጁ የውሃ ማጠራቀሚያዎች፣ ተጠባባቂ የኤሌክትሪክ ጄነሬተሮች እና ማዕከላዊ የቆሻሻ ማስወገጃዎች ጋር ይገነባሉ። ሁልጊዜ እነዚህ መገልገያዎች ያሏቸውን ፕሮጀክቶች መምረጥ ይመከራል።",
+    "faq.q6": "ቴምር ፕሮፐርቲስ በአሁኑ ጊዜ በአዲስ አበባ ምን ምን ፕሮጀክቶችን ያቀርባል?",
+    "faq.a6":
+      "ቴምር ፕሮፐርቲስ በአዲስ አበባ ውስጥ እንደ አያት፣ ሌቡ፣ ላፍቶ፣ ሳርቤት እና ፒያሳ ባሉ ዋና ዋና ቦታዎች ላይ ከ10 በላይ ታላላቅ የመኖሪያ አፓርትመንቶች እና የንግድ ቦታዎች ፕሮጀክቶችን ገንብቶ አስረክቧል። በእነዚህ አካባቢዎች ያሉ ዘመናዊ ቤቶችን እና የቅንጦት አፓርትመንቶችን እናቀርባለን።",
+    "faq.q7": "ቴምር ፕሮፐርቲስ 'ያለ ዋጋ ጭማሪ' (no price hike) ፖሊሲ የሚታወቀው ለምንድነው?",
+    "faq.a7":
+      "በኢትዮጵያ ካሉ በርካታ አልሚዎች በተለየ መልኩ፣ ቴምር ፕሮፐርቲስ በሽያጭ ውል ላይ ቋሚ የዋጋ ዋስትና ይሰጣል። አንዴ ውል ፈርመው የመነሻ ቅድመ ክፍያ ካጠናቀቁ በኋላ የሽያጭ ዋጋው የሚቆለፍ በመሆኑ ከግንባታ ግብአቶች የዋጋ መናር ወይም ድንገተኛ የገበያ ጭማሪ ይጠበቃሉ።",
 
     // Footer
     "footer.tagline":
-      "ለመጀመሪያ ጊዜ ገዢዎች የአዲስ አበባን ገበያ ያለምንም ጭንቀት እንዲረዱ ማገዝ። በመላው ኢትዮጵያ የተረጋገጡ አፓርትመንቶች፣ ቪላዎች፣ የንግድ ቦታዎች እና የኢንቨስትመንት እድሎች — በተፈቀደ የቴምር ፕሮፐርቲስ የሽያጭ ተወካይ የሚቀርቡ።",
+      "ለመጀመሪያ ጊዜ ገዢዎች የአዲስ አበባን ገበያ ያለምንም ጭንቀት እንዲረዱ ማገዝ። በመላው ኢትዮጵያ የተረጋገጡ አፓርትመንቶች፣ ዘመናዊ ቤቶች፣ የንግድ ቦታዎች እና የኢንቨስትመንት እድሎች — በተፈቀደ የቴምር ፕሮፐርቲስ የሽያጭ ተወካይ የሚቀርቡ።",
     "footer.explore": "ያስሱ",
     "footer.contact": "አግኙን",
     "footer.rights": "ሁሉም መብቶች የተጠበቁ ናቸው።",
-    "footer.affiliate": "ራሱን የቻለ አማካሪ — ከቴምር ፕሮፐርቲስ ጋር የተቆራኘ።",
+    "footer.affiliate": "ራሱን የቻለ ወኪል — ከቴምር ፕሮፐርቲስ ጋር የተቆራኘ።",
   },
   om: {
     // Nav
@@ -252,14 +264,20 @@ export const translations = {
     "faq.q5": "Bishaan fi humna ibsaa apaartama haaraa keessatti akkamitti sirreeffama?",
     "faq.a5":
       "Tajaajila amansiisaa mirkaneessuuf, apaartamoonni qulqullina qaban backup bishaanii, jeneereetara ibsaa fi sirna deebii kosiitiin ijaaraman. Yeroo hunda pirojektoota kana qaban filadhaa.",
+    "faq.q6": "Pirojektoonni Teemer Properties yeroo ammaa Finfinnee keessatti dhiyessu kamfa'i?",
+    "faq.a6":
+      "Teemer Properties Finfinnee keessatti naannolee akka Ayaat, Lebu, Laaftoo, Saarbeet, fi Piyaasaa keessatti pirojektoota gurguddoo 10 ol xumuree dabarseera. Apaartama qulqullina qabanii fi manneen jireenyaa casri ta'an dhiyeessina.",
+    "faq.q7": "Maaliif Teemer Properties imaammata 'daballiin gatii hin jiru' (no price hike) jedhuun beekama?",
+    "faq.a7":
+      "Ijaartota biroo Itoophiyaa irraa adda kan ta'e, Teemer Properties waliigaltee gurgurtaa irratti gatii dhaabbataa ta'e waadaa gala. Vaan takka mallatteessitanii kaffaltii jalqabaa erga xumurtanii booda gatiin bitannaa keessanii hin dabalu.",
 
     // Footer
     "footer.tagline":
-      "Gargaarsa bittoota jalqabaa rakkoo malee akka hubatan gargaaruu. Itoophiyaa keessatti apaartamaa, viilaa, daldalaa fi investimentii mirkanaaje — garee gurgurtaa Teemer properties bakka bu'een.",
+      "Gargaarsa bittoota jalqabaa rakkoo malee akka hubatan gargaaruu. Itoophiyaa keessatti apaartamaa, manneen jireenyaa, daldalaa fi investimentii mirkanaaje — garee gurgurtaa Teemer properties bakka bu'een.",
     "footer.explore": "Barbaadi",
     "footer.contact": "Nu Quunnamaa",
     "footer.rights": "Mirgi hunduu eegameera.",
-    "footer.affiliate": "Gorsa dhuunfaa — kan Teemer Properties wajjin walitti hidhame.",
+    "footer.affiliate": "Bakka bu'aa dhuunfaa — kan Teemer Properties wajjin walitti hidhame.",
   },
   ti: {
     // Nav
@@ -337,14 +355,20 @@ export const translations = {
     "faq.q5": "ሓደስቲ ኣብ ዝህነጹ ህንጻታት ናይ ማይን መብራህትን ጸገም ከመይ ይፍታሕ?",
     "faq.a5":
       "ኣተማማኒ ኣገልግሎት ንምርግጋጽ፣ ፅሬት ዘለዎም ኣፓርትመንትታት (ብፍላይ ኣብ ቦሌ፣ ሳርቤትን ማእከላይ ከባቢታትን) ናይ ማይ መኸዘኒታት፣ ተጠባባቒ ጄነሬተራትን ማእከላይ ናይ ጐሓፍ መውገዲታትን የጠቓልሉ እዮም። ኩል ጊዜ እዞም መሳለጥያታት ዘለዎም ፕሮጀክትታት ምምራጽ ይምረጽ።",
+    "faq.q6": "ቴምር ፕሮፐርቲስ ኣብዚ እዋን ኣብ ኣዲስ ኣበባ እንታይ ፕሮጀክትታት የቕርብ?",
+    "faq.a6":
+      "ቴምር ፕሮፐርቲስ ኣብ ኣዲስ ኣበባ ኣብ ከም አያት፣ ሌቡ፣ ላፍቶ፣ ሳርቤት፣ ፒያሳ ዝበሉ ቦታታት ልዕሊ 10 ዓበይቲ ፕሮጀክትታት ኣፓርትመንትን ንግድን ኣረኪቡ እዩ። ዘመናዊ ኣባይትን ዝበለጹ ኣፓርትመንትታትን ነቕርብ።",
+    "faq.q7": "ቴምር ፕሮፐርቲስ 'ያለ ወሰኽ ዋጋ' (no price hike) ፖሊሲ ዝፍለጥ ስለምንታይ እዩ?",
+    "faq.a7":
+      "ካብ ብዙሓት ኣማዕበልቲ ሪል ስቴት ብዝተፈለየ፣ ቴምር ፕሮፐርቲስ ኣብ ውዕል መሸጣ ውሑስን ቀዋሚን ዋጋ የረጋግጽ። ሓዴሻ ውዕል ፈሪምኩም ቅድመ ክፍያ ምስ ዛዘምኩም፣ ዋጋ መግዚኢኹም ስለዝዕጾ ካብ ናይ ህንጻ መሳርሒታት ወሰኽ ዋጋ ድሕንቲ ትኾኑ።",
 
     // Footer
     "footer.tagline":
-      "ንፈለማ ግዜ ዓደግቲ ናይ ኣዲስ ኣበባ ዕዳጋ ብዘይ ምንም ጭንቀት ክርድኡ ምሕጋዝ። ኣብ መላእ ኢትዮጵያ ዝተረጋገጹ ኣፓርትመንትታት፣ ቪላታት፣ ናይ ንግዲ ቦታታትን ናይ ኢንቨስትመንት ዕድላትን — ብፍቑድ ናይ ቴምር ፕሮፐርቲስ መሸጣ ተወካሊ ዝቐርቡ።",
+      "ንፈለማ ግዜ ዓደግቲ ናይ ኣዲስ ኣበባ ዕዳጋ ብዘይ ምንም ጭንቀት ክርድኡ ምሕጋዝ። ኣብ መላእ ኢትዮጵያ ዝተረጋገጹ ኣፓርትመንትታት፣ ዘመናዊ ኣባይት፣ ናይ ንግዲ ቦታታትን ናይ ኢንቨስትመንት ዕድላትን — ብፍቑድ ናይ ቴምር ፕሮፐርቲስ መሸጣ ተወካሊ ዝቐርቡ።",
     "footer.explore": "ኣስፉ",
     "footer.contact": "ርኸቡና",
     "footer.rights": "ኮሉ መሰላት ዝተሓለወ እዩ።",
-    "footer.affiliate": "ውልቃዊ ኣማኻሪ — ምስ ቴምር ፕሮፐርቲስ ዝተኣሳሰረ።",
+    "footer.affiliate": "ውልቃዊ ወኪል — ምስ ቴምር ፕሮፐርቲስ ዝተኣሳሰረ።",
   },
   so: {
     // Nav
@@ -424,6 +448,12 @@ export const translations = {
     "faq.q5": "Sidee shirkadaha horumarinta u xaliyaan dhibaatada biyaha iyo korontada ee dhismayaasha cusub?",
     "faq.a5":
       "Si loo hubiyo adeeg la kalsoonaan karo, guryaha tayada leh (gaar ahaan Bole, Sarbet iyo agagaarka dhexe) waxaa lagu dhisaa haamo biyo kayd ah, matoorada korontada iyo nidaamyada qashin saarka. Had iyo jeer dooro mashaariicda leh adeegyadan.",
+    "faq.q6": "Waa kuwee mashaariicda ay hadda Temer Properties ka bixiso Addis Ababa?",
+    "faq.a6":
+      "Temer Properties waxay Addis Ababa ka samaysay in ka badan 10 mashruuc oo isugu jira deegaan iyo ganacsi, gaar ahaan xaafadaha Ayat, Lebu, Lafto, Sarbet, iyo Piassa. Waxaan bixinaa dabaqyo raaxo leh iyo guryo qoys oo casri ah.",
+    "faq.q7": "Maxay Temer Properties caan ugu tahay qorshaha 'qiimo koror la'aanta' (no price hike)?",
+    "faq.a7":
+      "Si ka duwan shirkado badan oo Itoobiya ku yaal, Temer Properties waxay bixisaa dammaanad qiimo go'an oo ku qoran heshiiska iibka. Markaad saxiixdo oo aad bixiso lacagta hormariska ah, qiimahaaga waa la xirayaa mana isbeddelayo.",
 
     // Footer
     "footer.tagline":
@@ -431,7 +461,7 @@ export const translations = {
     "footer.explore": "Baadh",
     "footer.contact": "Nala soo xiriir",
     "footer.rights": "Dhamaan xuquuqaha waa la dhowray.",
-    "footer.affiliate": "La-taliye madax-bannaan — oo xiriir la leh Temer Properties.",
+    "footer.affiliate": "Wakiil madax-bannaan — oo xiriir la leh Temer Properties.",
   },
 } as const;
 

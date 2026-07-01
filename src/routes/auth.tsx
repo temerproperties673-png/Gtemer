@@ -7,7 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Temer Consultant Admin" },
+      { title: "Sign in — Temer Sales Agent Admin" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -21,7 +21,6 @@ const schema = z.object({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -34,28 +33,21 @@ function AuthPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const parsed = schema.safeParse({ email, password });
+    const sanitizedEmail = email.trim().toLowerCase();
+    const parsed = schema.safeParse({ email: sanitizedEmail, password });
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
     }
     setBusy(true);
     try {
-      if (mode === "signup") {
-        const { error } = await supabase.auth.signUp({
-          email: parsed.data.email,
-          password: parsed.data.password,
-          options: { emailRedirectTo: `${window.location.origin}/admin` },
-        });
-        if (error) throw error;
-        toast.success("Account created. You're signed in.");
-        navigate({ to: "/admin" });
-      } else {
-        const { error } = await supabase.auth.signInWithPassword(parsed.data);
-        if (error) throw error;
-        toast.success("Welcome back.");
-        navigate({ to: "/admin" });
-      }
+      const { error } = await supabase.auth.signInWithPassword({
+        email: parsed.data.email,
+        password: parsed.data.password,
+      });
+      if (error) throw error;
+      toast.success("Welcome back.");
+      navigate({ to: "/admin" });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Authentication failed");
     } finally {
@@ -66,13 +58,9 @@ function AuthPage() {
   return (
     <section className="container-x py-20">
       <div className="mx-auto max-w-md rounded-2xl border border-border bg-card p-8 shadow-card">
-        <h1 className="font-display text-3xl font-bold">
-          {mode === "signin" ? "Admin Sign In" : "Create Admin Account"}
-        </h1>
+        <h1 className="font-display text-3xl font-bold">Admin Sign In</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {mode === "signin"
-            ? "Sign in to manage properties and leads."
-            : "The first account becomes the admin."}
+          Sign in to manage properties and leads.
         </p>
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <input
@@ -92,15 +80,9 @@ function AuthPage() {
             className="h-12 w-full rounded-xl border border-input bg-background px-4 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
           />
           <button type="submit" disabled={busy} className="btn-primary w-full disabled:opacity-60">
-            {busy ? "Please wait..." : mode === "signin" ? "Sign in" : "Create account"}
+            {busy ? "Please wait..." : "Sign in"}
           </button>
         </form>
-        <button
-          onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
-          className="mt-4 w-full text-center text-sm text-muted-foreground hover:text-foreground"
-        >
-          {mode === "signin" ? "Need an account? Sign up" : "Already have an account? Sign in"}
-        </button>
         <Link
           to="/"
           className="mt-6 block text-center text-xs text-muted-foreground hover:text-foreground"

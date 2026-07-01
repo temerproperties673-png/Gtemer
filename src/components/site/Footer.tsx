@@ -40,6 +40,11 @@ export function Footer() {
                 {t("nav.contact")}
               </Link>
             </li>
+            <li>
+              <Link to="/auth" className="hover:text-primary font-semibold transition-colors">
+                Admin Panel Login
+              </Link>
+            </li>
           </ul>
         </div>
         <div>

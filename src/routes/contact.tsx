@@ -21,16 +21,16 @@ export const Route = createFileRoute("/contact")({
     const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
 
     const titles: Record<Lang, string> = {
-      en: "Contact Us — Addis Property Market",
-      am: "ያግኙን — አዲስ ፕሮፐርቲ ማርኬት",
-      om: "Nu Quunnamaa — Addis Property Market",
-      ti: "ርኸቡና — ኣዲስ ፕሮፐርቲ ማርኬት",
-      so: "Nala soo Xiriir — Addis Property Market",
+      en: "Contact Temer Properties Sales — Addis Property Market",
+      am: "የቴምር ፕሮፐርቲስ ሽያጭ ያግኙ — አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Qabeenya Teemer Properties Quunnamaa — Addis Property Market",
+      ti: "ናይ ቴምር ፕሮፐርቲስ መሸጣ ርኸቡ — ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "La Xiriir Temer Properties — Addis Property Market",
     };
 
     const descriptions: Record<Lang, string> = {
-      en: "Get in touch with your Temer Properties consultant. Call, WhatsApp, email or book a site visit.",
-      am: "ከቴምር ፕሮፐርቲስ የሽያጭ አማካሪ ጋር ይገናኙ። በስልክ፣ በዋትስኣፕ፣ በኢሜይል ያግኙን ወይም የአየር ላይ ጉብኝት ይያዙ።",
+      en: "Get in touch with your Temer Properties sales agent. Call, WhatsApp, email or book a site visit.",
+      am: "ከቴምር ፕሮፐርቲስ የሽያጭ ወኪል ጋር ይገናኙ። በስልክ፣ በዋትስኣፕ፣ በኢሜይል ያግኙን ወይም የአየር ላይ ጉብኝት ይያዙ።",
       om: "Gareen gurgurtaa Teemer properties quunnamaa. Bilbila, WhatsApp, email ykn daawwannaa qabadhaa.",
       ti: "ምስ ቴምር ፕሮፐርቲስ ክፍሊ መሸጣ ርክብ ግበሩ። ብስልኪ፣ ብዋትስኣፕ፣ ብኢመይል ርኸቡና ወይ ዑደት ይሓዙ።",
       so: "La xiriir wakiilka iibka ee Temer Properties. Wicitaan, WhatsApp, email ama ballanso booqasho.",
@@ -64,10 +64,10 @@ export const Route = createFileRoute("/contact")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "ContactPage",
-          name: "Contact Temer Consultant",
+          name: "Contact Temer Sales Agent",
           mainEntity: {
             "@type": "RealEstateAgent",
-            name: "Temer Consultant",
+            name: "Temer Sales Agent",
             telephone: CONSULTANT.phone,
             email: CONSULTANT.email,
             address: {

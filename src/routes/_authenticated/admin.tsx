@@ -28,7 +28,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Admin Dashboard — Temer Consultant" },
+      { title: "Admin Dashboard — Temer Sales Agent" },
       { name: "robots", content: "noindex,nofollow" },
     ],
   }),
@@ -506,29 +506,62 @@ function PropertyForm({
     published: initial?.published ?? true,
   });
   const [coverImage, setCoverImage] = useState<string | null>(initial?.cover_image || null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [gallery, setGallery] = useState<string[]>(initial?.gallery || []);
-  const [uploading, setUploading] = useState(false);
+  const [galleryNewFiles, setGalleryNewFiles] = useState<File[]>([]);
+  const [uploadMsg, setUploadMsg] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const handleUpload = async (files: FileList | null, kind: "cover" | "gallery") => {
-    if (!files || files.length === 0) return;
-    setUploading(true);
-    try {
-      if (kind === "cover") {
-        const url = await uploadPropertyImage(files[0]);
-        setCoverImage(url);
-      } else {
-        const urls: string[] = [];
-        for (const f of Array.from(files)) {
-          urls.push(await uploadPropertyImage(f));
-        }
-        setGallery((g) => [...g, ...urls]);
+  const coverPreview = useMemo(() => {
+    if (coverImageFile) {
+      try {
+        return URL.createObjectURL(coverImageFile);
+      } catch (e) {
+        console.error("Preview creation failed", e);
       }
-      toast.success("Image uploaded");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
+    }
+    return coverImage;
+  }, [coverImageFile, coverImage]);
+
+  const galleryPreviews = useMemo(() => {
+    const existing = gallery.map((url, idx) => ({
+      url,
+      isNew: false,
+      id: `old-${idx}`,
+      fileIndex: undefined as number | undefined,
+    }));
+    const newFiles = galleryNewFiles.map((file, idx) => {
+      let url = "";
+      try {
+        url = URL.createObjectURL(file);
+      } catch (e) {
+        console.error("Preview creation failed", e);
+      }
+      return { url, isNew: true, id: `new-${idx}`, fileIndex: idx as number | undefined };
+    });
+    return [...existing, ...newFiles];
+  }, [gallery, galleryNewFiles]);
+
+  const handleRemoveCover = () => {
+    setCoverImage(null);
+    setCoverImageFile(null);
+  };
+
+  const handleRemoveGalleryItem = (url: string, isNew: boolean, fileIndex?: number) => {
+    if (isNew && fileIndex !== undefined) {
+      setGalleryNewFiles((prev) => prev.filter((_, idx) => idx !== fileIndex));
+    } else {
+      setGallery((prev) => prev.filter((u) => u !== url));
+    }
+  };
+
+  const handleUpload = (files: FileList | null, kind: "cover" | "gallery") => {
+    if (!files || files.length === 0) return;
+    if (kind === "cover") {
+      setCoverImageFile(files[0]);
+      setCoverImage(null);
+    } else {
+      setGalleryNewFiles((prev) => [...prev, ...Array.from(files)]);
     }
   };
 
@@ -539,6 +572,38 @@ function PropertyForm({
       return;
     }
     setSaving(true);
+
+    let finalCoverImage = coverImage;
+    if (coverImageFile) {
+      setUploadMsg("Uploading cover image...");
+      try {
+        finalCoverImage = await uploadPropertyImage(coverImageFile);
+      } catch (err) {
+        setSaving(false);
+        setUploadMsg("");
+        toast.error(err instanceof Error ? `Cover image upload failed: ${err.message}` : "Cover image upload failed");
+        return;
+      }
+    }
+
+    const finalGallery = [...gallery];
+    if (galleryNewFiles.length > 0) {
+      for (let i = 0; i < galleryNewFiles.length; i++) {
+        setUploadMsg(`Uploading gallery image ${i + 1} of ${galleryNewFiles.length}...`);
+        try {
+          const url = await uploadPropertyImage(galleryNewFiles[i]);
+          finalGallery.push(url);
+        } catch (err) {
+          setSaving(false);
+          setUploadMsg("");
+          toast.error(err instanceof Error ? `Gallery image upload failed (image ${i + 1}): ${err.message}` : `Gallery image upload failed (image ${i + 1})`);
+          return;
+        }
+      }
+    }
+
+    setUploadMsg("Saving property data...");
+
     const payload = {
       title: form.title.trim(),
       slug: (form.slug || slugify(form.title)).trim(),
@@ -557,21 +622,27 @@ function PropertyForm({
         .filter(Boolean),
       featured: form.featured,
       published: form.published,
-      cover_image: coverImage,
-      gallery,
+      cover_image: finalCoverImage,
+      gallery: finalGallery,
     };
 
-    const { error } = initial
-      ? await supabase.from("properties").update(payload).eq("id", initial.id)
-      : await supabase.from("properties").insert(payload);
+    try {
+      const { error } = initial
+        ? await supabase.from("properties").update(payload).eq("id", initial.id)
+        : await supabase.from("properties").insert(payload);
 
-    if (error) {
-      toast.error(error.message);
-    } else {
-      toast.success(initial ? "Property updated" : "Property created");
-      onSaved();
+      if (error) {
+        toast.error(`Database save failed: ${error.message}`);
+      } else {
+        toast.success(initial ? "Property updated" : "Property created");
+        onSaved();
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save property");
+    } finally {
+      setSaving(false);
+      setUploadMsg("");
     }
-    setSaving(false);
   };
 
   return (
@@ -715,12 +786,12 @@ function PropertyForm({
               Cover Image
             </label>
             <div className="mt-2 flex items-center gap-3">
-              {coverImage && (
+              {coverPreview && (
                 <div className="relative">
-                  <img src={coverImage} alt="" className="h-20 w-28 rounded-lg object-cover" />
+                  <img src={coverPreview} alt="" className="h-20 w-28 rounded-lg object-cover" />
                   <button
                     type="button"
-                    onClick={() => setCoverImage(null)}
+                    onClick={handleRemoveCover}
                     className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground"
                   >
                     <X className="h-3 w-3" />
@@ -745,12 +816,12 @@ function PropertyForm({
               Gallery
             </label>
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              {gallery.map((url, i) => (
-                <div key={url} className="relative">
-                  <img src={url} alt="" className="h-20 w-28 rounded-lg object-cover" />
+              {galleryPreviews.map((p) => (
+                <div key={p.id} className="relative">
+                  <img src={p.url} alt="" className="h-20 w-28 rounded-lg object-cover" />
                   <button
                     type="button"
-                    onClick={() => setGallery(gallery.filter((_, idx) => idx !== i))}
+                    onClick={() => handleRemoveGalleryItem(p.url, p.isNew, p.fileIndex)}
                     className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground"
                   >
                     <X className="h-3 w-3" />
@@ -790,7 +861,12 @@ function PropertyForm({
             </label>
           </div>
 
-          {uploading && <p className="text-sm text-muted-foreground">Uploading image...</p>}
+          {saving && uploadMsg && (
+            <div className="flex items-center gap-3 rounded-xl bg-primary/10 p-4 text-sm text-primary border border-primary/20 animate-pulse">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <span className="font-medium">{uploadMsg}</span>
+            </div>
+          )}
 
           <div className="flex justify-end gap-3 border-t border-border pt-4">
             <button type="button" onClick={onClose} className="btn-outline">
@@ -798,7 +874,7 @@ function PropertyForm({
             </button>
             <button
               type="submit"
-              disabled={saving || uploading}
+              disabled={saving}
               className="btn-primary disabled:opacity-60"
             >
               {saving ? "Saving..." : initial ? "Save Changes" : "Create Property"}
@@ -1370,26 +1446,62 @@ function ProjectForm({
     published: initial?.published ?? true,
   });
   const [coverImage, setCoverImage] = useState<string | null>(initial?.cover_image || null);
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
   const [gallery, setGallery] = useState<string[]>(initial?.gallery || []);
-  const [uploading, setUploading] = useState(false);
+  const [galleryNewFiles, setGalleryNewFiles] = useState<File[]>([]);
+  const [uploadMsg, setUploadMsg] = useState("");
   const [saving, setSaving] = useState(false);
 
-  const handleUpload = async (files: FileList | null, kind: "cover" | "gallery") => {
-    if (!files || files.length === 0) return;
-    setUploading(true);
-    try {
-      if (kind === "cover") {
-        setCoverImage(await uploadPropertyImage(files[0]));
-      } else {
-        const urls: string[] = [];
-        for (const f of Array.from(files)) urls.push(await uploadPropertyImage(f));
-        setGallery((g) => [...g, ...urls]);
+  const coverPreview = useMemo(() => {
+    if (coverImageFile) {
+      try {
+        return URL.createObjectURL(coverImageFile);
+      } catch (e) {
+        console.error("Preview creation failed", e);
       }
-      toast.success("Image uploaded");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
+    }
+    return coverImage;
+  }, [coverImageFile, coverImage]);
+
+  const galleryPreviews = useMemo(() => {
+    const existing = gallery.map((url, idx) => ({
+      url,
+      isNew: false,
+      id: `old-${idx}`,
+      fileIndex: undefined as number | undefined,
+    }));
+    const newFiles = galleryNewFiles.map((file, idx) => {
+      let url = "";
+      try {
+        url = URL.createObjectURL(file);
+      } catch (e) {
+        console.error("Preview creation failed", e);
+      }
+      return { url, isNew: true, id: `new-${idx}`, fileIndex: idx as number | undefined };
+    });
+    return [...existing, ...newFiles];
+  }, [gallery, galleryNewFiles]);
+
+  const handleRemoveCover = () => {
+    setCoverImage(null);
+    setCoverImageFile(null);
+  };
+
+  const handleRemoveGalleryItem = (url: string, isNew: boolean, fileIndex?: number) => {
+    if (isNew && fileIndex !== undefined) {
+      setGalleryNewFiles((prev) => prev.filter((_, idx) => idx !== fileIndex));
+    } else {
+      setGallery((prev) => prev.filter((u) => u !== url));
+    }
+  };
+
+  const handleUpload = (files: FileList | null, kind: "cover" | "gallery") => {
+    if (!files || files.length === 0) return;
+    if (kind === "cover") {
+      setCoverImageFile(files[0]);
+      setCoverImage(null);
+    } else {
+      setGalleryNewFiles((prev) => [...prev, ...Array.from(files)]);
     }
   };
 
@@ -1400,6 +1512,38 @@ function ProjectForm({
       return;
     }
     setSaving(true);
+
+    let finalCoverImage = coverImage;
+    if (coverImageFile) {
+      setUploadMsg("Uploading cover image...");
+      try {
+        finalCoverImage = await uploadPropertyImage(coverImageFile);
+      } catch (err) {
+        setSaving(false);
+        setUploadMsg("");
+        toast.error(err instanceof Error ? `Cover image upload failed: ${err.message}` : "Cover image upload failed");
+        return;
+      }
+    }
+
+    const finalGallery = [...gallery];
+    if (galleryNewFiles.length > 0) {
+      for (let i = 0; i < galleryNewFiles.length; i++) {
+        setUploadMsg(`Uploading gallery image ${i + 1} of ${galleryNewFiles.length}...`);
+        try {
+          const url = await uploadPropertyImage(galleryNewFiles[i]);
+          finalGallery.push(url);
+        } catch (err) {
+          setSaving(false);
+          setUploadMsg("");
+          toast.error(err instanceof Error ? `Gallery image upload failed (image ${i + 1}): ${err.message}` : `Gallery image upload failed (image ${i + 1})`);
+          return;
+        }
+      }
+    }
+
+    setUploadMsg("Saving project data...");
+
     const payload = {
       title: form.title.trim(),
       location: form.location.trim(),
@@ -1410,19 +1554,27 @@ function ProjectForm({
       sort_order: Number(form.sort_order) || 0,
       featured: form.featured,
       published: form.published,
-      cover_image: coverImage,
-      gallery,
+      cover_image: finalCoverImage,
+      gallery: finalGallery,
     };
-    const { error } = initial
-      ? await supabase.from("projects").update(payload).eq("id", initial.id)
-      : await supabase.from("projects").insert(payload);
 
-    if (error) toast.error(error.message);
-    else {
-      toast.success(initial ? "Project updated" : "Project created");
-      onSaved();
+    try {
+      const { error } = initial
+        ? await supabase.from("projects").update(payload).eq("id", initial.id)
+        : await supabase.from("projects").insert(payload);
+
+      if (error) {
+        toast.error(`Database save failed: ${error.message}`);
+      } else {
+        toast.success(initial ? "Project updated" : "Project created");
+        onSaved();
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to save project");
+    } finally {
+      setSaving(false);
+      setUploadMsg("");
     }
-    setSaving(false);
   };
 
   return (
@@ -1506,12 +1658,12 @@ function ProjectForm({
               Cover Image
             </label>
             <div className="mt-2 flex items-center gap-3">
-              {coverImage && (
+              {coverPreview && (
                 <div className="relative">
-                  <img src={coverImage} alt="" className="h-20 w-28 rounded-lg object-cover" />
+                  <img src={coverPreview} alt="" className="h-20 w-28 rounded-lg object-cover" />
                   <button
                     type="button"
-                    onClick={() => setCoverImage(null)}
+                    onClick={handleRemoveCover}
                     className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground"
                   >
                     <X className="h-3 w-3" />
@@ -1535,12 +1687,12 @@ function ProjectForm({
               Gallery
             </label>
             <div className="mt-2 flex flex-wrap items-center gap-3">
-              {gallery.map((url, i) => (
-                <div key={url} className="relative">
-                  <img src={url} alt="" className="h-20 w-28 rounded-lg object-cover" />
+              {galleryPreviews.map((p) => (
+                <div key={p.id} className="relative">
+                  <img src={p.url} alt="" className="h-20 w-28 rounded-lg object-cover" />
                   <button
                     type="button"
-                    onClick={() => setGallery(gallery.filter((_, idx) => idx !== i))}
+                    onClick={() => handleRemoveGalleryItem(p.url, p.isNew, p.fileIndex)}
                     className="absolute -right-2 -top-2 rounded-full bg-destructive p-1 text-destructive-foreground"
                   >
                     <X className="h-3 w-3" />
@@ -1579,7 +1731,12 @@ function ProjectForm({
             </label>
           </div>
 
-          {uploading && <p className="text-sm text-muted-foreground">Uploading image...</p>}
+          {saving && uploadMsg && (
+            <div className="flex items-center gap-3 rounded-xl bg-primary/10 p-4 text-sm text-primary border border-primary/20 animate-pulse">
+              <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+              <span className="font-medium">{uploadMsg}</span>
+            </div>
+          )}
 
           <div className="flex justify-end gap-3 border-t border-border pt-4">
             <button type="button" onClick={onClose} className="btn-outline">
@@ -1587,7 +1744,7 @@ function ProjectForm({
             </button>
             <button
               type="submit"
-              disabled={saving || uploading}
+              disabled={saving}
               className="btn-primary disabled:opacity-60"
             >
               {saving ? "Saving..." : initial ? "Save Changes" : "Create Project"}

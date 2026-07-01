@@ -54,11 +54,11 @@ export const Route = createFileRoute("/properties/$slug")({
     const url = `https://addispropertymarket.com/properties/${params.slug}`;
 
     const branding: Record<Lang, string> = {
-      en: "Addis Property Market",
-      am: "አዲስ ፕሮፐርቲ ማርኬት",
-      om: "Addis Property Market",
-      ti: "ኣዲስ ፕሮፐርቲ ማርኬት",
-      so: "Addis Property Market",
+      en: "Temer Properties | Addis Property Market",
+      am: "ቴምር ፕሮፐርቲስ | አዲስ ፕሮፐርቲ ማርኬት",
+      om: "Temer Properties | Addis Property Market",
+      ti: "ቴምር ፕሮፐርቲስ | ኣዲስ ፕሮፐርቲ ማርኬት",
+      so: "Temer Properties | Addis Property Market",
     };
 
     const details: Record<Lang, string> = {
@@ -104,7 +104,7 @@ export const Route = createFileRoute("/properties/$slug")({
                 description: p.description,
                 image: [p.cover_image, ...(p.gallery || [])].filter(Boolean),
                 category: p.property_type,
-                brand: { "@type": "Organization", name: p.developer },
+                brand: { "@type": "Organization", name: p.developer || "Temer Properties" },
                 offers: {
                   "@type": "Offer",
                   availability: "https://schema.org/InStock",
@@ -117,7 +117,7 @@ export const Route = createFileRoute("/properties/$slug")({
                   url,
                   seller: {
                     "@type": "RealEstateAgent",
-                    name: "Addis Property Market",
+                    name: "Addis Property Market — Authorized Temer Properties Agent",
                     telephone: CONSULTANT.phone,
                   },
                 },

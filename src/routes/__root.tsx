@@ -78,17 +78,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Addis Property Market — Premium Real Estate in Addis Ababa" },
+      { title: "Temer Properties & Homes — Addis Property Market" },
       {
         name: "description",
         content:
-          "Verified apartments, villas and commercial spaces in Addis Ababa. Direct access to your Temer Properties sales consultant.",
+          "Authorized sales agent for Temer Properties in Addis Ababa. Search verified apartments, modern homes, and commercial real estate.",
       },
       { name: "author", content: "Addis Property Market" },
-      { property: "og:title", content: "Addis Property Market — Premium Real Estate in Addis Ababa" },
+      { property: "og:title", content: "Temer Properties & Homes — Addis Property Market" },
       {
         property: "og:description",
-        content: "Verified apartments, villas and commercial spaces in Addis Ababa.",
+        content: "Authorized sales agent for Temer Properties in Addis Ababa. Search verified apartments, modern homes, and commercial real estate.",
       },
       { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
       { property: "og:type", content: "website" },
@@ -115,9 +115,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "RealEstateAgent",
-          name: "Addis Property Market",
+          name: "Addis Property Market — Authorized Temer Properties Agent",
           description:
-            "Addis Property Market — Authorized Temer Properties sales offering verified apartments, villas and commercial spaces in Addis Ababa.",
+            "Addis Property Market — Authorized Temer Properties sales agent offering verified apartments, modern homes, and commercial spaces in Addis Ababa.",
           areaServed: { "@type": "City", name: "Addis Ababa" },
           telephone: CONSULTANT.phone,
           email: CONSULTANT.email,

@@ -7,7 +7,7 @@ import p6 from "@/assets/property-6.jpg";
 
 export const CONSULTANT = {
   name: "Addis Property Market",
-  title: "Senior Sales Consultant — Temer Properties",
+  title: "Senior Sales Agent — Temer Properties",
   phone: "+251949775542",
   phoneDisplay: "+251 949 775 542",
   whatsapp: "251923791278",
