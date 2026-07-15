@@ -86,12 +86,12 @@ export const Route = createFileRoute("/properties/$slug")({
       ],
       links: [
         { rel: "canonical", href: url },
-        { rel: "alternate", hreflang: "en", href: `${url}?lang=en` },
-        { rel: "alternate", hreflang: "am", href: `${url}?lang=am` },
-        { rel: "alternate", hreflang: "om", href: `${url}?lang=om` },
-        { rel: "alternate", hreflang: "ti", href: `${url}?lang=ti` },
-        { rel: "alternate", hreflang: "so", href: `${url}?lang=so` },
-        { rel: "alternate", hreflang: "x-default", href: url },
+        { rel: "alternate", hrefLang: "en", href: `${url}?lang=en` },
+        { rel: "alternate", hrefLang: "am", href: `${url}?lang=am` },
+        { rel: "alternate", hrefLang: "om", href: `${url}?lang=om` },
+        { rel: "alternate", hrefLang: "ti", href: `${url}?lang=ti` },
+        { rel: "alternate", hrefLang: "so", href: `${url}?lang=so` },
+        { rel: "alternate", hrefLang: "x-default", href: url },
       ],
       scripts: p
         ? [

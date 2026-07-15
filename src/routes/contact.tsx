@@ -51,12 +51,12 @@ export const Route = createFileRoute("/contact")({
       ],
       links: [
         { rel: "canonical", href: "https://addispropertymarket.com/contact" },
-        { rel: "alternate", hreflang: "en", href: "https://addispropertymarket.com/contact?lang=en" },
-        { rel: "alternate", hreflang: "am", href: "https://addispropertymarket.com/contact?lang=am" },
-        { rel: "alternate", hreflang: "om", href: "https://addispropertymarket.com/contact?lang=om" },
-        { rel: "alternate", hreflang: "ti", href: "https://addispropertymarket.com/contact?lang=ti" },
-        { rel: "alternate", hreflang: "so", href: "https://addispropertymarket.com/contact?lang=so" },
-        { rel: "alternate", hreflang: "x-default", href: "https://addispropertymarket.com/contact" },
+        { rel: "alternate", hrefLang: "en", href: "https://addispropertymarket.com/contact?lang=en" },
+        { rel: "alternate", hrefLang: "am", href: "https://addispropertymarket.com/contact?lang=am" },
+        { rel: "alternate", hrefLang: "om", href: "https://addispropertymarket.com/contact?lang=om" },
+        { rel: "alternate", hrefLang: "ti", href: "https://addispropertymarket.com/contact?lang=ti" },
+        { rel: "alternate", hrefLang: "so", href: "https://addispropertymarket.com/contact?lang=so" },
+        { rel: "alternate", hrefLang: "x-default", href: "https://addispropertymarket.com/contact" },
       ],
       scripts: [
       {
