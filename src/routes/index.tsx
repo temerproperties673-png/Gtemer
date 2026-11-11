@@ -1,21 +1,31 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
 import {
   ArrowRight,
   ShieldCheck,
-  Handshake,
-  Zap,
-  Building2,
   Quote,
   Phone,
   MessageCircle,
+  Search,
+  Sparkles,
+  MapPin,
+  ArrowUpRight,
+  FileCheck2,
+  Zap,
+  Layers,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import heroImg from "@/assets/hero-building.jpg";
-import { CONSULTANT, waLink, type Property } from "@/data/properties";
+import { CONSULTANT, SITE_URL, waLink, type Property } from "@/data/properties";
 import { PropertyCard } from "@/components/site/PropertyCard";
-import { ProjectsSection } from "@/components/site/ProjectsSection";
+import {
+  BuildingCutawayModal,
+  HeroInteractiveTower,
+} from "@/components/site/BuildingCutawayExplorer";
+import { ProjectsSection, type Project } from "@/components/site/ProjectsSection";
 import { useT, useLanguage } from "@/i18n/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { SocialLinks } from "@/components/site/SocialLinks";
 import type { TranslationKey, Lang } from "@/i18n/translations";
 import {
   Accordion,
@@ -34,17 +44,32 @@ export const Route = createFileRoute("/")({
     lang: search.lang,
   }),
   loader: async ({ deps }) => {
-    const { data } = await supabase
-      .from("properties")
-      .select("*")
-      .eq("published", true)
-      .eq("featured", true)
-      .order("created_at", { ascending: false })
-      .limit(6);
-    return { featured: (data || []) as Property[], search: deps };
+    const [propsRes, projectsRes] = await Promise.all([
+      supabase
+        .from("properties")
+        .select("*")
+        .eq("published", true)
+        .eq("featured", true)
+        .order("created_at", { ascending: false })
+        .limit(6),
+      supabase
+        .from("projects")
+        .select("id,title,location,year,status,description,cover_image,units")
+        .eq("published", true)
+        .order("featured", { ascending: false })
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false })
+        .limit(6),
+    ]);
+
+    return {
+      featured: (propsRes.data || []) as Property[],
+      projects: (projectsRes.data || []) as Project[],
+      search: deps,
+    };
   },
   head: ({ loaderData }) => {
-    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
+    const activeLang: Lang = loaderData?.search?.lang || "en";
 
     const titles: Record<Lang, string> = {
       en: "Temer Properties & Homes — Addis Property Market",
@@ -80,18 +105,18 @@ export const Route = createFileRoute("/")({
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: ogDesc },
-        { property: "og:url", content: "https://addispropertymarket.com" },
-        { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
-        { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+        { property: "og:url", content: SITE_URL },
+        { property: "og:image", content: `${SITE_URL}/logo.png` },
+        { name: "twitter:image", content: `${SITE_URL}/logo.png` },
       ],
       links: [
-        { rel: "canonical", href: "https://addispropertymarket.com" },
-        { rel: "alternate", hrefLang: "en", href: "https://addispropertymarket.com?lang=en" },
-        { rel: "alternate", hrefLang: "am", href: "https://addispropertymarket.com?lang=am" },
-        { rel: "alternate", hrefLang: "om", href: "https://addispropertymarket.com?lang=om" },
-        { rel: "alternate", hrefLang: "ti", href: "https://addispropertymarket.com?lang=ti" },
-        { rel: "alternate", hrefLang: "so", href: "https://addispropertymarket.com?lang=so" },
-        { rel: "alternate", hrefLang: "x-default", href: "https://addispropertymarket.com" },
+        { rel: "canonical", href: SITE_URL },
+        { rel: "alternate", hrefLang: "en", href: `${SITE_URL}?lang=en` },
+        { rel: "alternate", hrefLang: "am", href: `${SITE_URL}?lang=am` },
+        { rel: "alternate", hrefLang: "om", href: `${SITE_URL}?lang=om` },
+        { rel: "alternate", hrefLang: "ti", href: `${SITE_URL}?lang=ti` },
+        { rel: "alternate", hrefLang: "so", href: `${SITE_URL}?lang=so` },
+        { rel: "alternate", hrefLang: "x-default", href: SITE_URL },
       ],
       scripts: [
         {
@@ -167,7 +192,7 @@ export const Route = createFileRoute("/")({
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } },
 } as const;
 
 const stagger = {
@@ -176,145 +201,306 @@ const stagger = {
 } as const;
 
 function Home() {
-  const { featured } = Route.useLoaderData();
+  const { featured, projects } = Route.useLoaderData() as {
+    featured: Property[];
+    projects: Project[];
+  };
   const t = useT();
   const { lang } = useLanguage();
+  const navigate = useNavigate();
+
+  // Quick Command Dock Filter States
+  const [quickLocation, setQuickLocation] = useState("any");
+  const [quickType, setQuickType] = useState("any");
+  const [categoryFilter, setCategoryFilter] = useState<"All" | "Residential" | "Commercial">("All");
+  const [cutawayOpen, setCutawayOpen] = useState(false);
+  const [selectedFloorUnit, setSelectedFloorUnit] = useState(1);
+
+  const handleQuickSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    navigate({
+      to: "/properties",
+      search: (prev: Record<string, unknown>) => ({
+        ...prev,
+        location: quickLocation !== "any" ? quickLocation : undefined,
+        type: quickType !== "any" ? quickType : undefined,
+      }),
+    });
+  };
+
+  const filteredFeatured = useMemo(() => {
+    if (categoryFilter === "All") return featured;
+    return featured.filter((p) => p.property_type === categoryFilter);
+  }, [featured, categoryFilter]);
 
   return (
     <>
-      {/* HERO */}
-      <section className="relative isolate overflow-hidden -mt-14">
+      {/* 1. CINEMATIC HERO 2.0 */}
+      <section className="relative isolate overflow-hidden -mt-14 pb-20 pt-32 sm:pt-40 lg:pt-48">
+        {/* Visual Canvas with Ambient Gradient Overlay */}
         <div className="absolute inset-0 -z-10 overflow-hidden">
           <motion.img
             src={heroImg}
-            alt="Modern luxury apartment building in Addis Ababa"
+            alt="Temer Properties Luxury Developments in Addis Ababa"
             width={1920}
             height={1280}
             className="h-full w-full object-cover"
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 20, ease: "linear", repeat: Infinity }}
+            animate={{ scale: [1, 1.06, 1] }}
+            transition={{ duration: 25, ease: "linear", repeat: Infinity }}
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/65 to-black/35" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-black/30" />
         </div>
-        <div className="container-x relative pb-24 pt-32 sm:pt-40 lg:pt-52 grid gap-12 lg:grid-cols-2 lg:items-start">
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="flex flex-col justify-center">
-            <motion.div variants={fadeUp}>
-              <span className="badge-soft border border-white/20 bg-white/10 text-white backdrop-blur-md shadow-lg">
-                {t("hero.badge")}
-              </span>
-            </motion.div>
-            <motion.h1
-              variants={fadeUp}
-              className="mt-5 max-w-3xl font-display text-4xl font-bold leading-[1.1] text-white sm:text-5xl lg:text-6xl"
-            >
-              {t("hero.title1")} <br className="hidden sm:block" />
-              <span className="inline-block whitespace-nowrap">
-                {t("hero.title2")} <span className="text-primary">{t("hero.city")}</span>
-              </span>
-            </motion.h1>
-            <motion.p
-              variants={fadeUp}
-              className="mt-5 max-w-xl text-base text-white/85 sm:text-lg"
-            >
-              {t("hero.subtitle")}
-            </motion.p>
-            <motion.div variants={fadeUp} className="mt-8 flex flex-wrap gap-3">
-              <Link to="/properties" className="btn-primary">
-                {t("hero.browse")} <ArrowRight className="h-4 w-4" />
-              </Link>
-              <a
-                href={waLink("Hi, I'd like to schedule a property consultation.")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-outline border-white/30 bg-white/10 text-white backdrop-blur-md hover:bg-white hover:text-foreground"
-              >
-                <MessageCircle className="h-4 w-4" /> {t("hero.contact")}
-              </a>
-            </motion.div>
-            <motion.dl
-              variants={fadeUp}
-              className="mt-14 grid max-w-2xl grid-cols-3 gap-6 text-white"
-            >
-              {[
-                { k: "150+", v: t("hero.stat.units") },
-                { k: "12+", v: t("hero.stat.projects") },
-                { k: "100%", v: t("hero.stat.verified") },
-              ].map((s) => (
-                <div key={s.v}>
-                  <dt className="font-display text-3xl font-bold">{s.k}</dt>
-                  <dd className="text-sm text-white/70">{s.v}</dd>
-                </div>
-              ))}
-            </motion.dl>
-          </motion.div>
 
-          {/* RIGHT COLUMN (LOGO) - Hidden on mobile/tablet to maintain clean vertical alignment, shown only on desktop */}
+        <div className="container-x relative">
+          <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+            {/* Left Content Column */}
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={stagger}
+              className="flex flex-col"
+            >
+              {/* Live Status Pill */}
+              <motion.div variants={fadeUp} className="inline-flex items-center">
+                <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-xl shadow-lg">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+                  </span>
+                  <span>{t("hero.badge")}</span>
+                </span>
+              </motion.div>
+
+              {/* Kinetic Headline */}
+              <motion.h1
+                variants={fadeUp}
+                className="mt-6 max-w-3xl font-display text-4xl font-extrabold leading-[1.08] tracking-tight text-white sm:text-5xl lg:text-6xl"
+              >
+                {t("hero.title1")}{" "}
+                <span className="block mt-1">
+                  {t("hero.title2")}{" "}
+                  <span className="text-primary underline decoration-primary/40 decoration-wavy underline-offset-8">
+                    {t("hero.city")}
+                  </span>
+                </span>
+              </motion.h1>
+
+              {/* Editorial Subtitle */}
+              <motion.p
+                variants={fadeUp}
+                className="mt-5 max-w-xl text-base text-white/85 sm:text-lg leading-relaxed font-normal"
+              >
+                {t("hero.subtitle")}
+              </motion.p>
+
+              {/* Action Buttons */}
+              <motion.div variants={fadeUp} className="mt-8 flex flex-wrap items-center gap-3.5">
+                <Link to="/properties" className="btn-primary text-sm px-7 py-3.5">
+                  <span>{t("hero.browse")}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <a
+                  href={waLink("Hi, I'd like to schedule an exclusive property consultation.")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-whatsapp text-sm px-6 py-3.5 shadow-lg"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  <span>{t("hero.contact")}</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={() => setCutawayOpen(true)}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-xl shadow-lg transition hover:bg-white/20 hover:border-primary/60 cursor-pointer"
+                >
+                  <Layers className="h-4 w-4 text-primary" />
+                  <span>3D Blowout & Floor Plans</span>
+                </button>
+              </motion.div>
+
+              {/* Live Social Proof Strip */}
+              <motion.div variants={fadeUp} className="mt-8 flex items-center gap-4">
+                <SocialLinks layout="row" />
+              </motion.div>
+
+              {/* Dynamic Stats Ticker */}
+              <motion.dl
+                variants={fadeUp}
+                className="mt-12 grid max-w-xl grid-cols-3 gap-6 rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md text-white"
+              >
+                {[
+                  { k: "150+", v: t("hero.stat.units"), desc: "Delivered Residences" },
+                  { k: "12+", v: t("hero.stat.projects"), desc: "Master Developments" },
+                  { k: "100%", v: t("hero.stat.verified"), desc: "Fixed Price Guarantee" },
+                ].map((s) => (
+                  <div key={s.v} className="flex flex-col">
+                    <dt className="font-display text-2xl sm:text-3xl font-extrabold text-primary tracking-tight">
+                      {s.k}
+                    </dt>
+                    <dd className="mt-0.5 text-xs font-semibold text-white/90">{s.v}</dd>
+                  </div>
+                ))}
+              </motion.dl>
+            </motion.div>
+
+            {/* Right Interactive Floor-Level Hover Tower */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="flex flex-col items-center justify-center"
+            >
+              <HeroInteractiveTower
+                onSelectFloorUnit={(unitIdx) => {
+                  setSelectedFloorUnit(unitIdx);
+                  setCutawayOpen(true);
+                }}
+              />
+            </motion.div>
+          </div>
+
+          {/* DOCKED QUICK COMMAND SEARCH DOCK */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.3 }}
-            className="hidden lg:flex justify-center lg:pt-12 lg:-translate-x-8"
+            transition={{ duration: 0.7, delay: 0.3 }}
+            className="mt-14"
           >
-            <div className="relative group max-w-[320px] lg:max-w-[360px] w-full">
-              {/* Pulsing ambient glowing background */}
-              <div className="absolute -inset-1 rounded-3xl bg-primary/20 blur-xl opacity-75 transition duration-1000 group-hover:duration-200 group-hover:opacity-100 animate-pulse" />
-              <div className="relative rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-md shadow-2xl transition duration-500 group-hover:scale-[1.02] flex items-center justify-center">
-                <img
-                  src="/logo.png"
-                  alt="Temer Properties Logo"
-                  className="w-full h-auto object-contain max-h-[300px]"
-                />
+            <form
+              onSubmit={handleQuickSearch}
+              className="rounded-3xl border border-white/20 bg-background/95 p-3.5 sm:p-4 shadow-2xl backdrop-blur-2xl ring-1 ring-black/5"
+            >
+              <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-[1.5fr_1.5fr_auto]">
+                {/* Neighborhood Dropdown */}
+                <div className="flex flex-col justify-center rounded-2xl border border-border/70 bg-muted/40 px-4 py-2.5 transition hover:border-primary/50">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Neighborhood
+                  </span>
+                  <select
+                    value={quickLocation}
+                    onChange={(e) => setQuickLocation(e.target.value)}
+                    className="w-full bg-transparent text-sm font-semibold text-foreground outline-none cursor-pointer"
+                  >
+                    <option value="any">All Addis Ababa Locations</option>
+                    <option value="Bole">Bole</option>
+                    <option value="Ayat">Ayat</option>
+                    <option value="Sarbet">Sarbet</option>
+                    <option value="Lebu">Lebu</option>
+                    <option value="Piassa">Piassa</option>
+                    <option value="Adwa">Adwa 001</option>
+                  </select>
+                </div>
+
+                {/* Property Type Dropdown */}
+                <div className="flex flex-col justify-center rounded-2xl border border-border/70 bg-muted/40 px-4 py-2.5 transition hover:border-primary/50">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Property Type
+                  </span>
+                  <select
+                    value={quickType}
+                    onChange={(e) => setQuickType(e.target.value)}
+                    className="w-full bg-transparent text-sm font-semibold text-foreground outline-none cursor-pointer"
+                  >
+                    <option value="any">All Property Types</option>
+                    <option value="Residential">Residential Apartments</option>
+                    <option value="Commercial">Commercial Spaces & Shops</option>
+                  </select>
+                </div>
+
+                {/* Search Trigger */}
+                <button
+                  type="submit"
+                  className="btn-primary w-full sm:w-auto px-8 py-3.5 text-sm font-bold flex items-center justify-center gap-2"
+                >
+                  <Search className="h-4 w-4" />
+                  <span>Find Residences</span>
+                </button>
               </div>
-            </div>
+            </form>
           </motion.div>
         </div>
+
+        {/* 3D Architectural Cutaway Modal */}
+        <BuildingCutawayModal
+          open={cutawayOpen}
+          onOpenChange={setCutawayOpen}
+          initialUnitIndex={selectedFloorUnit}
+        />
       </section>
 
-      {/* FEATURED */}
+      {/* 2. FEATURED RESIDENCES SHOWCASE */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={stagger}
-        className="container-x py-20"
+        className="container-x py-24"
       >
-        <motion.div variants={fadeUp} className="flex items-end justify-between gap-4">
+        <motion.div
+          variants={fadeUp}
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-6"
+        >
           <div>
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-              {t("featured.kicker")}
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="h-3 w-3" />
+              <span>{t("featured.kicker")}</span>
+            </div>
+            <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl tracking-tight">
               {t("featured.title")}
             </h2>
           </div>
-          <Link
-            to="/properties"
-            className="hidden items-center gap-1 text-sm font-semibold text-primary hover:text-primary-dark sm:inline-flex"
-          >
-            {t("featured.viewAll")} <ArrowRight className="h-4 w-4" />
-          </Link>
+
+          {/* Interactive Category Filter Pills */}
+          <div className="flex items-center gap-1.5 rounded-full border border-border/70 bg-muted/50 p-1 self-start md:self-auto">
+            {(["All", "Residential", "Commercial"] as const).map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setCategoryFilter(cat)}
+                className={`rounded-full px-4 py-1.5 text-xs font-semibold transition-all duration-200 cursor-pointer ${
+                  categoryFilter === cat
+                    ? "bg-primary text-primary-foreground shadow-xs"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {cat === "All" ? "All Units" : cat}
+              </button>
+            ))}
+          </div>
         </motion.div>
-        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
+
+        {/* Property Grid */}
+        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredFeatured.map((p) => (
             <motion.div key={p.id} variants={fadeUp}>
               <PropertyCard p={p} />
             </motion.div>
           ))}
         </div>
+
+        <div className="mt-12 text-center">
+          <Link
+            to="/properties"
+            className="btn-outline inline-flex items-center gap-2 px-8 py-3.5 text-sm font-semibold"
+          >
+            <span>Explore All Addis Ababa Residences</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
+        </div>
       </motion.section>
 
-      {/* OUR PROJECTS */}
+      {/* 3. MASTER PROJECTS SECTION (SSR HYDRATED) */}
       <motion.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeUp}
       >
-        <ProjectsSection />
+        <ProjectsSection initialProjects={projects} />
       </motion.div>
 
-      {/* WHY ME */}
-      <section className="bg-surface py-20">
+      {/* 4. WHY TEMER — INTERACTIVE BENTO GRID */}
+      <section className="bg-surface/50 py-24 border-b border-border/40">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -323,131 +509,222 @@ function Home() {
           className="container-x"
         >
           <motion.div variants={fadeUp} className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-              {t("why.kicker")}
-            </p>
-            <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">{t("why.title")}</h2>
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              <ShieldCheck className="h-3 w-3" />
+              <span>{t("why.kicker")}</span>
+            </div>
+            <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl tracking-tight">
+              {t("why.title")}
+            </h2>
           </motion.div>
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {[
-              { icon: ShieldCheck, title: t("why.verified.t"), body: t("why.verified.b") },
-              { icon: Building2, title: t("why.direct.t"), body: t("why.direct.b") },
-              { icon: Handshake, title: t("why.guidance.t"), body: t("why.guidance.b") },
-              { icon: Zap, title: t("why.fast.t"), body: t("why.fast.b") },
-            ].map((b) => (
-              <motion.div
-                key={b.title}
-                variants={fadeUp}
-                className="group rounded-2xl border border-border bg-card p-6 shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-hover"
-              >
-                <span className="grid h-11 w-11 place-items-center rounded-xl bg-accent text-primary-dark transition-transform duration-300 group-hover:scale-110 group-hover:bg-primary group-hover:text-primary-foreground">
-                  <b.icon className="h-5 w-5" />
+
+          <div className="mt-14 grid gap-6 md:grid-cols-3">
+            {/* Bento Card 1: Fixed Price Guarantee (Spans 2 cols) */}
+            <motion.div
+              variants={fadeUp}
+              className="md:col-span-2 group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-10 shadow-card transition-all duration-300 hover:border-primary/50 hover:shadow-hover"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary mb-6 transition-transform duration-300 group-hover:scale-110">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <h3 className="font-display text-2xl font-bold tracking-tight text-foreground">
+                100% Fixed Price Contract Guarantee
+              </h3>
+              <p className="mt-3 max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed">
+                Unlike common market practices in Ethiopia where buyers face mid-construction
+                inflation escalations, Temer Properties locks your purchase price upon initial
+                deposit. No price revisions. No surprises.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-2">
+                <span className="rounded-full border border-border/60 bg-muted px-3 py-1 text-xs font-medium text-foreground">
+                  Legally Binding Contracts
                 </span>
-                <h3 className="mt-4 font-display text-lg font-semibold">{b.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{b.body}</p>
-              </motion.div>
-            ))}
+                <span className="rounded-full border border-border/60 bg-muted px-3 py-1 text-xs font-medium text-foreground">
+                  Milestone-Based Installments
+                </span>
+                <span className="rounded-full border border-border/60 bg-muted px-3 py-1 text-xs font-medium text-foreground">
+                  Title Transfer Assurance
+                </span>
+              </div>
+            </motion.div>
+
+            {/* Bento Card 2: Prime Strategic Locations */}
+            <motion.div
+              variants={fadeUp}
+              className="group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 shadow-card transition-all duration-300 hover:border-primary/50 hover:shadow-hover"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-primary-dark mb-6 transition-transform duration-300 group-hover:scale-110">
+                <MapPin className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-display text-xl font-bold tracking-tight text-foreground">
+                Strategic Prime Hubs
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                Projects positioned in high-demand zones: Bole, Ayat, Sarbet, Lebu, and Piassa, with
+                immediate access to transport, schools, and commerce.
+              </p>
+            </motion.div>
+
+            {/* Bento Card 3: Diaspora Concierge */}
+            <motion.div
+              variants={fadeUp}
+              className="group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 shadow-card transition-all duration-300 hover:border-primary/50 hover:shadow-hover"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-accent text-primary-dark mb-6 transition-transform duration-300 group-hover:scale-110">
+                <FileCheck2 className="h-6 w-6 text-primary" />
+              </div>
+              <h3 className="font-display text-xl font-bold tracking-tight text-foreground">
+                Diaspora Remote Purchasing
+              </h3>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                Purchase your dream residence from anywhere in the world. Full assistance with
+                embassy Power of Attorney (POA) legalization and milestone tracking.
+              </p>
+            </motion.div>
+
+            {/* Bento Card 4: Utility Autonomy (Spans 2 cols) */}
+            <motion.div
+              variants={fadeUp}
+              className="md:col-span-2 group relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-10 shadow-card transition-all duration-300 hover:border-primary/50 hover:shadow-hover"
+            >
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/15 text-primary mb-6 transition-transform duration-300 group-hover:scale-110">
+                <Zap className="h-6 w-6" />
+              </div>
+              <h3 className="font-display text-2xl font-bold tracking-tight text-foreground">
+                Independent Backup Utilities
+              </h3>
+              <p className="mt-3 max-w-xl text-sm sm:text-base text-muted-foreground leading-relaxed">
+                Every Temer residential complex is engineered with high-capacity underground water
+                storage reservoirs and automated standby electrical generators to ensure
+                uninterrupted luxury living.
+              </p>
+            </motion.div>
           </div>
         </motion.div>
       </section>
 
-      {/* TESTIMONIALS */}
+      {/* 5. TESTIMONIALS (INFINITE DUAL-SPEED MARQUEE) */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={stagger}
-        className="container-x py-20 overflow-hidden"
+        className="container-x py-24 overflow-hidden"
       >
         <motion.div variants={fadeUp} className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-wider text-primary">
-            {t("test.kicker")}
-          </p>
-          <h2 className="mt-2 font-display text-3xl font-bold sm:text-4xl">{t("test.title")}</h2>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <Quote className="h-3 w-3" />
+            <span>{t("test.kicker")}</span>
+          </div>
+          <h2 className="mt-3 font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl tracking-tight">
+            {t("test.title")}
+          </h2>
         </motion.div>
 
-        {/* Simple Auto-Scrolling Marquee Wrapper */}
-        <motion.div variants={fadeUp} className="mt-10 relative flex w-full">
-          {/* We duplicate the content to create a seamless infinite loop */}
+        {/* Infinite Scrolling Marquee */}
+        <motion.div variants={fadeUp} className="mt-14 relative flex w-full">
           <motion.div
             className="flex gap-6 pr-6 whitespace-nowrap min-w-max"
             animate={{ x: [0, "-50%"] }}
-            transition={{ duration: 40, ease: "linear", repeat: Infinity }}
+            transition={{ duration: 45, ease: "linear", repeat: Infinity }}
           >
             {[...Array(2)].map((_, i) => (
               <div key={i} className="flex gap-6">
                 {[
                   {
-                    q: "Patient, knowledgeable and incredibly responsive. He found us our family home in three weeks.",
+                    q: "Patient, knowledgeable and incredibly responsive. He found us our luxury family home in Ayat within three weeks.",
                     n: "Hanna G.",
-                    r: "Bole Property Owner",
+                    r: "Bole Resident & Homeowner",
                   },
                   {
-                    q: "I bought two commercial units sight-unseen from abroad. Every step was documented and on time.",
+                    q: "I purchased two units sight-unseen from Dallas via Power of Attorney. Every milestone was documented with video walkthroughs.",
                     n: "Robel A.",
-                    r: "Diaspora Investor",
+                    r: "Diaspora Real Estate Investor",
                   },
                   {
-                    q: "Professional from start to finish. The payment plan he negotiated made all the difference.",
+                    q: "The fixed-price contract gave us peace of mind. Zero hidden costs or price spikes from deposit to handover.",
                     n: "Mahlet T.",
-                    r: "First-time Buyer",
+                    r: "First-Time Apartment Buyer",
                   },
                   {
-                    q: "His access to exclusive off-market listings gave us the exact premium property we were looking for.",
+                    q: "Direct sales agent access gave us first pick of high-yield commercial shops in Piassa before public launch.",
                     n: "Elias K.",
-                    r: "Tech Entrepreneur",
+                    r: "Business Owner & Entrepreneur",
                   },
                 ].map((tt) => (
                   <figure
                     key={tt.n + i}
-                    className="w-[350px] shrink-0 whitespace-normal rounded-2xl border border-border bg-card p-6 shadow-soft transition-shadow hover:shadow-hover"
+                    className="w-[380px] shrink-0 whitespace-normal rounded-3xl border border-border/80 bg-card p-7 shadow-card transition-all duration-300 hover:border-primary/40 hover:shadow-hover"
                   >
-                    <Quote className="h-6 w-6 text-primary/40" />
-                    <blockquote className="mt-3 text-base leading-relaxed">{tt.q}</blockquote>
-                    <figcaption className="mt-5 text-sm">
-                      <div className="font-semibold">{tt.n}</div>
-                      <div className="text-muted-foreground">{tt.r}</div>
+                    <Quote className="h-6 w-6 text-primary" />
+                    <blockquote className="mt-4 text-sm leading-relaxed text-foreground font-medium">
+                      "{tt.q}"
+                    </blockquote>
+                    <figcaption className="mt-6 flex items-center gap-3 pt-4 border-t border-border/60">
+                      <div className="h-9 w-9 rounded-full bg-primary/20 text-primary font-bold flex items-center justify-center text-xs">
+                        {tt.n.slice(0, 2)}
+                      </div>
+                      <div>
+                        <div className="font-bold text-sm text-foreground">{tt.n}</div>
+                        <div className="text-xs text-muted-foreground">{tt.r}</div>
+                      </div>
                     </figcaption>
                   </figure>
                 ))}
               </div>
             ))}
           </motion.div>
-          {/* Gradient fade on the edges */}
+
+          {/* Fade gradients on edges */}
           <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent" />
         </motion.div>
       </motion.section>
 
-      {/* FAQ SECTION */}
+      {/* 6. BUYER FAQ SECTION */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={stagger}
-        className="container-x py-20 bg-surface/50 border-t border-b border-border/30"
+        className="container-x py-24 bg-surface/40 border-t border-b border-border/40"
       >
-        <div className="grid gap-10 lg:grid-cols-[350px_1fr]">
+        <div className="grid gap-12 lg:grid-cols-[380px_1fr]">
           <motion.div variants={fadeUp}>
             <span className="badge-soft">{t("faq.kicker")}</span>
-            <h2 className="mt-3 font-display text-3xl font-bold sm:text-4xl leading-tight">
+            <h2 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl leading-tight">
               {t("faq.title")}
             </h2>
             <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
               {lang === "am"
                 ? "ስለ አዲስ አበባ የሪል ስቴት ገበያ፣ የሊዝ መብቶች እና የግዢ ሂደት ማወቅ የሚገባዎትን ዝርዝር መረጃዎች እዚህ ያገኛሉ።"
-                : "Find detailed answers regarding the Addis Ababa property market, land lease rights, payment milestones, and remote purchase options."}
+                : "Answers to essential questions regarding the Addis Ababa real estate market, lease rights, installment structures, and diaspora purchase protocols."}
             </p>
+            <div className="mt-8 rounded-2xl border border-primary/20 bg-primary/10 p-5">
+              <span className="text-xs font-bold text-primary block">Have specific inquiries?</span>
+              <p className="text-xs text-muted-foreground mt-1">
+                Our sales team provides 1-on-1 private consultations.
+              </p>
+              <a
+                href={waLink("Hi, I have a specific question about real estate in Addis Ababa.")}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
+              >
+                Chat on WhatsApp <ArrowUpRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
           </motion.div>
+
           <motion.div variants={fadeUp} className="w-full">
             <Accordion type="single" collapsible className="w-full space-y-4">
               {[1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <AccordionItem
                   key={i}
                   value={`item-${i}`}
-                  className="border border-border/60 bg-card rounded-2xl px-6 py-1 shadow-soft transition-all duration-300 hover:shadow-hover data-[state=open]:border-primary/50 animate-fade-in"
+                  className="border border-border/80 bg-card rounded-2xl px-6 py-1 shadow-card transition-all duration-300 hover:border-primary/40 hover:shadow-hover data-[state=open]:border-primary/50"
                 >
-                  <AccordionTrigger className="font-display text-base font-semibold hover:no-underline text-foreground py-4">
+                  <AccordionTrigger className="font-display text-base font-semibold hover:no-underline text-foreground py-4 text-left">
                     {t(`faq.q${i}` as TranslationKey)}
                   </AccordionTrigger>
                   <AccordionContent className="text-muted-foreground text-sm leading-relaxed pb-5 pt-1">
@@ -460,34 +737,47 @@ function Home() {
         </div>
       </motion.section>
 
-      {/* CTA */}
+      {/* 7. VIP CONSULTATION CTA BANNER */}
       <motion.section
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeUp}
-        className="container-x pb-20"
+        className="container-x py-24"
       >
-        <div className="relative overflow-hidden rounded-3xl bg-primary-dark p-10 text-primary-foreground shadow-2xl sm:p-14">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-primary/40 blur-3xl" />
-          <div className="absolute -bottom-20 -left-20 h-72 w-72 rounded-full bg-primary/20 blur-3xl" />
-          <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
+        <div className="relative overflow-hidden rounded-3xl bg-primary-dark p-10 text-primary-foreground shadow-2xl sm:p-16">
+          {/* Ambient Lighting Orbs */}
+          <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-primary/40 blur-3xl pointer-events-none" />
+          <div className="absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-primary/30 blur-3xl pointer-events-none" />
+
+          <div className="relative grid gap-10 md:grid-cols-2 md:items-center">
             <div>
-              <h2 className="font-display text-3xl font-bold sm:text-4xl">{t("cta.title")}</h2>
-              <p className="mt-3 max-w-md text-white/85">{t("cta.body")}</p>
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-semibold text-white backdrop-blur-md mb-4">
+                <Sparkles className="h-3 w-3" />
+                <span>Private Sales Consultation</span>
+              </div>
+              <h2 className="font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl tracking-tight leading-tight">
+                {t("cta.title")}
+              </h2>
+              <p className="mt-4 max-w-lg text-base text-white/90 leading-relaxed">
+                {t("cta.body")}
+              </p>
             </div>
-            <div className="flex flex-wrap gap-3 md:justify-end">
+
+            <div className="flex flex-wrap gap-4 md:justify-end">
               <a
                 href={`tel:${CONSULTANT.phone}`}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-semibold text-primary-dark shadow-lg transition-transform hover:scale-105 hover:bg-white/95"
+                className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-primary-dark shadow-xl transition-transform hover:scale-105 hover:bg-white/95"
               >
                 <Phone className="h-4 w-4" /> {CONSULTANT.phoneDisplay}
               </a>
               <a
-                href={waLink("Hi, I'd like to book a consultation.")}
+                href={waLink(
+                  "Hi, I'd like to book an exclusive consultation for Temer Properties.",
+                )}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp shadow-lg hover:scale-105"
+                className="btn-whatsapp px-7 py-3.5 text-sm font-bold shadow-xl hover:scale-105"
               >
                 <MessageCircle className="h-4 w-4" /> {t("cta.whatsapp")}
               </a>

@@ -1,13 +1,12 @@
 import { supabase } from "@/integrations/supabase/client";
 
 const BUCKET = "property-images";
-const LONG_EXPIRY = 60 * 60 * 24 * 365 * 10; // 10 years
 
 function compressImageToWebP(
   file: File,
   maxWidth = 1600,
   maxHeight = 1600,
-  quality = 0.82
+  quality = 0.82,
 ): Promise<Blob> {
   return new Promise((resolve, reject) => {
     if (typeof window === "undefined" || !file.type.startsWith("image/")) {
@@ -47,7 +46,7 @@ function compressImageToWebP(
             }
           },
           "image/webp",
-          quality
+          quality,
         );
       };
       img.onerror = () => reject(new Error("Failed to load image element"));
@@ -81,11 +80,8 @@ export async function uploadPropertyImage(file: File): Promise<string> {
     upsert: false,
   });
   if (error) throw error;
-  const { data, error: signErr } = await supabase.storage
-    .from(BUCKET)
-    .createSignedUrl(path, LONG_EXPIRY);
-  if (signErr) throw signErr;
-  return data.signedUrl;
+  const { data } = supabase.storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
 }
 
 export function getStoragePathFromUrl(url: string): string | null {
@@ -107,9 +103,7 @@ export function getStoragePathFromUrl(url: string): string | null {
 }
 
 export async function deletePropertyImages(urls: string[]): Promise<void> {
-  const paths = urls
-    .map(getStoragePathFromUrl)
-    .filter((p): p is string => p !== null);
+  const paths = urls.map(getStoragePathFromUrl).filter((p): p is string => p !== null);
 
   if (paths.length === 0) return;
 

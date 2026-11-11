@@ -109,8 +109,7 @@ export const translations = {
     "hero.title1": "ደንበኞች ትክክለኛውን ንብረት እንዲያገኙ ማገዝ",
     "hero.title2": "በ",
     "hero.city": "ቴምር ፕሮፐርቲስ",
-    "hero.subtitle":
-      "በአዲስ አበባ የተረጋገጡ አፓርትመንቶች፣ የንግድ ቦታዎች እና የኢንቨስትመንት እድሎች — በቀጥታ ለእርስዎ የተመረጡ።",
+    "hero.subtitle": "በአዲስ አበባ የተረጋገጡ አፓርትመንቶች፣ የንግድ ቦታዎች እና የኢንቨስትመንት እድሎች — በቀጥታ ለእርስዎ የተመረጡ።",
     "hero.browse": "ንብረቶችን ይመልከቱ",
     "hero.contact": "የሽያጭ ክፍልን ያግኙ",
     "hero.stat.units": "የተሸጡ ቤቶች",
@@ -228,7 +227,8 @@ export const translations = {
     "why.verified.t": "Qabeenyota Mirkanaa'an",
     "why.verified.b": "Gara keessan dhiyaachuu dura manni hundi ni sakatta'ama, ni galmeeffama.",
     "why.direct.t": "Gara Ijaaraa Kallattiin",
-    "why.direct.b": "Harka-galleessota bira dabruu. Ani kallattiin garee gurgurtaa Teemer wajjin hojjedha.",
+    "why.direct.b":
+      "Harka-galleessota bira dabruu. Ani kallattiin garee gurgurtaa Teemer wajjin hojjedha.",
     "why.guidance.t": "Gorsa Ogeessaa",
     "why.guidance.b":
       "Daawwannaa jalqabaa irraa hanga harkaan gahuutti — waliigalteewwan, karoorawwan kaffaltii fi waraqaan ni hojjetama.",
@@ -267,7 +267,8 @@ export const translations = {
     "faq.q6": "Pirojektoonni Teemer Properties yeroo ammaa Finfinnee keessatti dhiyessu kamfa'i?",
     "faq.a6":
       "Teemer Properties Finfinnee keessatti naannolee akka Ayaat, Lebu, Laaftoo, Saarbeet, fi Piyaasaa keessatti pirojektoota gurguddoo 10 ol xumuree dabarseera. Apaartama qulqullina qabanii fi manneen jireenyaa casri ta'an dhiyeessina.",
-    "faq.q7": "Maaliif Teemer Properties imaammata 'daballiin gatii hin jiru' (no price hike) jedhuun beekama?",
+    "faq.q7":
+      "Maaliif Teemer Properties imaammata 'daballiin gatii hin jiru' (no price hike) jedhuun beekama?",
     "faq.a7":
       "Ijaartota biroo Itoophiyaa irraa adda kan ta'e, Teemer Properties waliigaltee gurgurtaa irratti gatii dhaabbataa ta'e waadaa gala. Vaan takka mallatteessitanii kaffaltii jalqabaa erga xumurtanii booda gatiin bitannaa keessanii hin dabalu.",
 
@@ -410,9 +411,11 @@ export const translations = {
     "why.kicker": "Maxaad noogu dooranaysaa",
     "why.title": "Khibrad shaqo oo gaar ah, bilow ilaa dhamaad",
     "why.verified.t": "Guryo la xaqiijiyay",
-    "why.verified.b": "Guri kasta waa la baaraa, waa la diiwaangeliyaa ka hor inta aan laguu soo bandhigin.",
+    "why.verified.b":
+      "Guri kasta waa la baaraa, waa la diiwaangeliyaa ka hor inta aan laguu soo bandhigin.",
     "why.direct.t": "Xiriirka tooska ah ee shirkada",
-    "why.direct.b": "Iska dhaaf dillaaliinta dhexe. Waxaan si toos ah ula shaqeeyaa kooxda iibka ee Temer Properties.",
+    "why.direct.b":
+      "Iska dhaaf dillaaliinta dhexe. Waxaan si toos ah ula shaqeeyaa kooxda iibka ee Temer Properties.",
     "why.guidance.t": "Tilmaamo xirfadeed",
     "why.guidance.b":
       "Laga bilaabo booqashada kowaad ilaa wareejinta — qandaraasyada, qorshayaasha lacag bixinta iyo dukumentiyada waa la diyaariyaa.",
@@ -445,13 +448,15 @@ export const translations = {
     "faq.q4": "Waa maxay qorshayaasha lacag bixinta ee guryaha dhismahoodu socdo?",
     "faq.a4":
       "Mashaariicda dhismahoodu socdo waxay bixiyaan qorshe lacag bixineed oo ku xiran heerarka dhismaha. Waxaad ku bilaabaysaa 10% ilaa 30% lacag hormaris ah. Lacagta hartay waxaa lagu bixiyaa heerar dhisme (aasaaska, dhismaha guud, dhameystirka) muddo 1 ilaa 3 sano ah.",
-    "faq.q5": "Sidee shirkadaha horumarinta u xaliyaan dhibaatada biyaha iyo korontada ee dhismayaasha cusub?",
+    "faq.q5":
+      "Sidee shirkadaha horumarinta u xaliyaan dhibaatada biyaha iyo korontada ee dhismayaasha cusub?",
     "faq.a5":
       "Si loo hubiyo adeeg la kalsoonaan karo, guryaha tayada leh (gaar ahaan Bole, Sarbet iyo agagaarka dhexe) waxaa lagu dhisaa haamo biyo kayd ah, matoorada korontada iyo nidaamyada qashin saarka. Had iyo jeer dooro mashaariicda leh adeegyadan.",
     "faq.q6": "Waa kuwee mashaariicda ay hadda Temer Properties ka bixiso Addis Ababa?",
     "faq.a6":
       "Temer Properties waxay Addis Ababa ka samaysay in ka badan 10 mashruuc oo isugu jira deegaan iyo ganacsi, gaar ahaan xaafadaha Ayat, Lebu, Lafto, Sarbet, iyo Piassa. Waxaan bixinaa dabaqyo raaxo leh iyo guryo qoys oo casri ah.",
-    "faq.q7": "Maxay Temer Properties caan ugu tahay qorshaha 'qiimo koror la'aanta' (no price hike)?",
+    "faq.q7":
+      "Maxay Temer Properties caan ugu tahay qorshaha 'qiimo koror la'aanta' (no price hike)?",
     "faq.a7":
       "Si ka duwan shirkado badan oo Itoobiya ku yaal, Temer Properties waxay bixisaa dammaanad qiimo go'an oo ku qoran heshiiska iibka. Markaad saxiixdo oo aad bixiso lacagta hormariska ah, qiimahaaga waa la xirayaa mana isbeddelayo.",
 

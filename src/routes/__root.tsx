@@ -15,7 +15,7 @@ import { Header } from "@/components/site/Header";
 import { Footer } from "@/components/site/Footer";
 import { Toaster } from "@/components/ui/sonner";
 import { LanguageProvider } from "@/i18n/LanguageContext";
-import { CONSULTANT } from "@/data/properties";
+import { CONSULTANT, SITE_URL } from "@/data/properties";
 import type { Lang } from "@/i18n/translations";
 
 function NotFoundComponent() {
@@ -88,12 +88,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Temer Properties & Homes — Addis Property Market" },
       {
         property: "og:description",
-        content: "Authorized sales agent for Temer Properties in Addis Ababa. Search verified apartments, modern homes, and commercial real estate.",
+        content:
+          "Authorized sales agent for Temer Properties in Addis Ababa. Search verified apartments, modern homes, and commercial real estate.",
       },
-      { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
+      { property: "og:image", content: `${SITE_URL}/logo.png` },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+      { name: "twitter:image", content: `${SITE_URL}/logo.png` },
     ],
     links: [
       { rel: "icon", type: "image/x-icon", href: "/favicons/favicon.ico" },
@@ -152,10 +153,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 const GTM_ID = "GTM-5FGD22NC";
+const VALID_LANGS: Lang[] = ["en", "am", "om", "ti", "so"];
 
 function RootShell({ children }: { children: ReactNode }) {
+  const search = Route.useSearch();
+  const activeLang = search.lang && VALID_LANGS.includes(search.lang) ? search.lang : "en";
+
   return (
-    <html lang="en">
+    <html lang={activeLang}>
       <head>
         <HeadContent />
         {/* Google Tag Manager */}

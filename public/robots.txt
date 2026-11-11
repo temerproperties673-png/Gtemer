@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /auth
 
-Sitemap: https://addispropertymarket.com/sitemap.xml
+Sitemap: https://temerpropertiessaless.com/sitemap.xml

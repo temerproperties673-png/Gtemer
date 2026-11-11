@@ -155,4 +155,13 @@
   .badge-soft {
     @apply inline-flex items-center rounded-full bg-accent px-3 py-1 text-xs font-medium text-accent-foreground;
   }
+  .glass-panel {
+    @apply backdrop-blur-xl bg-background/80 border border-border/70 shadow-card;
+  }
+  .glass-card {
+    @apply rounded-2xl border border-border/80 bg-card/90 backdrop-blur-md shadow-card transition-all duration-300 hover:border-primary/50 hover:shadow-hover;
+  }
+  .mesh-gradient-glow {
+    background: radial-gradient(circle at 50% 50%, oklch(0.68 0.14 130 / 0.18), transparent 70%);
+  }
 }

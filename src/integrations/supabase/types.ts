@@ -175,6 +175,27 @@ export type Database = {
         };
         Relationships: [];
       };
+      social_links: {
+        Row: {
+          active: boolean;
+          platform_key: string;
+          updated_at: string;
+          url: string;
+        };
+        Insert: {
+          active?: boolean;
+          platform_key: string;
+          updated_at?: string;
+          url: string;
+        };
+        Update: {
+          active?: boolean;
+          platform_key?: string;
+          updated_at?: string;
+          url?: string;
+        };
+        Relationships: [];
+      };
       user_roles: {
         Row: {
           created_at: string;

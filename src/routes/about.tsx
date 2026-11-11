@@ -1,6 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Phone, Mail, MapPin, MessageCircle, Award, Building2, Users, Star } from "lucide-react";
-import { CONSULTANT, waLink } from "@/data/properties";
+import {
+  Phone,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Award,
+  Building2,
+  Users,
+  Star,
+  Sparkles,
+  ShieldCheck,
+} from "lucide-react";
+import { motion } from "framer-motion";
+import { CONSULTANT, SITE_URL, waLink } from "@/data/properties";
 import { useLanguage } from "@/i18n/LanguageContext";
 
 import type { Lang } from "@/i18n/translations";
@@ -18,7 +30,7 @@ export const Route = createFileRoute("/about")({
     return { search: deps };
   },
   head: ({ loaderData }) => {
-    const activeLang = ((loaderData as any)?.search?.lang as Lang) || "en";
+    const activeLang: Lang = loaderData?.search?.lang || "en";
 
     const titles: Record<Lang, string> = {
       en: "About Temer Properties | Addis Property Market",
@@ -45,18 +57,21 @@ export const Route = createFileRoute("/about")({
         { name: "description", content: ogDesc },
         { property: "og:title", content: ogTitle },
         { property: "og:description", content: ogDesc },
-        { property: "og:image", content: "https://addispropertymarket.com/logo.png" },
-        { name: "twitter:image", content: "https://addispropertymarket.com/logo.png" },
+        { property: "og:image", content: `${SITE_URL}/logo.png` },
+        { name: "twitter:image", content: `${SITE_URL}/logo.png` },
       ],
       links: [
-        { rel: "canonical", href: "https://addispropertymarket.com/about" },
-        { rel: "alternate", hrefLang: "en", href: "https://addispropertymarket.com/about?lang=en" },
-        { rel: "alternate", hrefLang: "am", href: "https://addispropertymarket.com/about?lang=am" },
-        { rel: "alternate", hrefLang: "om", href: "https://addispropertymarket.com/about?lang=om" },
-        { rel: "alternate", hrefLang: "ti", href: "https://addispropertymarket.com/about?lang=ti" },
-        { rel: "alternate", hrefLang: "so", href: "https://addispropertymarket.com/about?lang=so" },
-        { rel: "alternate", hrefLang: "x-default", href: "https://addispropertymarket.com/about" },
-      ].filter((val, id, self) => self.findIndex(t => t.hrefLang === val.hrefLang && t.href === val.href) === id), // filter out duplicates just in case
+        { rel: "canonical", href: `${SITE_URL}/about` },
+        { rel: "alternate", hrefLang: "en", href: `${SITE_URL}/about?lang=en` },
+        { rel: "alternate", hrefLang: "am", href: `${SITE_URL}/about?lang=am` },
+        { rel: "alternate", hrefLang: "om", href: `${SITE_URL}/about?lang=om` },
+        { rel: "alternate", hrefLang: "ti", href: `${SITE_URL}/about?lang=ti` },
+        { rel: "alternate", hrefLang: "so", href: `${SITE_URL}/about?lang=so` },
+        { rel: "alternate", hrefLang: "x-default", href: `${SITE_URL}/about` },
+      ].filter(
+        (val, id, self) =>
+          self.findIndex((t) => t.hrefLang === val.hrefLang && t.href === val.href) === id,
+      ), // filter out duplicates just in case
     };
   },
   component: About,
@@ -220,98 +235,171 @@ function About() {
   const c = content[lang];
 
   return (
-    <section className="container-x py-16">
+    <section className="container-x py-16 lg:py-24">
       <div className="grid gap-12 lg:grid-cols-[380px_1fr] lg:items-start">
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-border bg-card p-8 shadow-card">
-          <img
-            src="/logo.png"
-            alt="Temer Properties Logo"
-            width={300}
-            height={300}
-            className="h-auto w-full max-w-[280px] object-contain transition-transform duration-300 hover:scale-105"
-          />
-          <p className="mt-4 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {lang === "am" ? "የቴምር ምልክት" : "Temer Properties Logo"}
-          </p>
-        </div>
-        <div>
-          <span className="badge-soft">{c.kicker}</span>
-          <h1 className="mt-3 font-display text-3xl font-bold sm:text-4xl leading-tight">
+        {/* Left Column: Brand Logo Showpiece */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative group"
+        >
+          <div className="absolute -inset-2 rounded-3xl bg-primary/20 blur-2xl opacity-70 group-hover:opacity-100 transition duration-700" />
+          <div className="relative flex flex-col items-center justify-center rounded-3xl border border-border/80 bg-card p-10 shadow-card backdrop-blur-xl">
+            <img
+              src="/logo.png"
+              alt="Temer Properties Logo"
+              width={300}
+              height={300}
+              className="h-auto w-full max-w-[260px] object-contain transition-transform duration-500 group-hover:scale-105"
+            />
+            <div className="mt-6 flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+              <Sparkles className="h-3 w-3" />
+              <span>Established 2010 EC</span>
+            </div>
+            <p className="mt-3 text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {lang === "am" ? "የቴምር ምልክት" : "Temer Properties Official Seal"}
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Right Column: Narrative & Stats Bento */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+        >
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <ShieldCheck className="h-3 w-3" />
+            <span>{c.kicker}</span>
+          </div>
+          <h1 className="mt-4 font-display text-3xl font-extrabold sm:text-4xl lg:text-5xl leading-tight tracking-tight text-foreground">
             {c.title}
           </h1>
 
-          <div className="mt-8 border-l-4 border-primary pl-4 py-1">
-            <h2 className="font-display text-xl font-bold">{c.sectionTitle}</h2>
-            <p className="text-sm text-primary font-medium">{c.sectionSubtitle}</p>
+          <div className="mt-8 border-l-4 border-primary pl-5 py-1">
+            <h2 className="font-display text-xl font-bold text-foreground">{c.sectionTitle}</h2>
+            <p className="text-sm text-primary font-semibold mt-0.5">{c.sectionSubtitle}</p>
           </div>
 
-          <div className="mt-6 space-y-4 text-muted-foreground leading-relaxed">
+          <div className="mt-6 space-y-4 text-base text-muted-foreground leading-relaxed">
             {c.paragraphs.map((p, i) => (
               <p key={i}>{p}</p>
             ))}
           </div>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          {/* Stats Cards */}
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {c.stats.map((s, idx) => {
               const Icon = idx === 0 ? Building2 : idx === 1 ? Award : Users;
               return (
-                <div key={idx} className="rounded-2xl border border-border bg-card p-5">
-                  <Icon className="h-5 w-5 text-primary" />
-                  <div className="mt-2 font-display text-2xl font-bold">{s.k}</div>
-                  <div className="text-sm text-muted-foreground">{s.v}</div>
+                <div
+                  key={idx}
+                  className="rounded-3xl border border-border/80 bg-card p-6 shadow-xs transition hover:border-primary/40 hover:shadow-soft"
+                >
+                  <div className="h-10 w-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-3">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <div className="font-display text-3xl font-extrabold tracking-tight text-foreground">
+                    {s.k}
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground mt-1">{s.v}</div>
                 </div>
               );
             })}
           </div>
 
-          <div className="mt-8">
-            <h3 className="font-display text-lg font-semibold">{c.expertiseTitle}</h3>
-            <div className="mt-3 flex flex-wrap gap-2">
+          {/* Areas of Expertise */}
+          <div className="mt-10">
+            <h3 className="font-display text-lg font-bold text-foreground">{c.expertiseTitle}</h3>
+            <div className="mt-4 flex flex-wrap gap-2.5">
               {c.expertiseList.map((t) => (
-                <span key={t} className="badge-soft">
+                <span
+                  key={t}
+                  className="rounded-full border border-border/70 bg-muted/60 px-4 py-1.5 text-xs font-semibold text-foreground"
+                >
                   {t}
                 </span>
               ))}
             </div>
           </div>
 
-          <div className="mt-10 rounded-2xl border border-border bg-card p-6 shadow-soft">
-            <h3 className="font-display text-lg font-semibold">{c.contactCard.title}</h3>
-            <div className="mt-4 grid gap-3 sm:grid-cols-2 text-sm">
+          {/* Contact Card */}
+          <div className="mt-12 rounded-3xl border border-border/80 bg-card p-8 shadow-card">
+            <h3 className="font-display text-xl font-bold text-foreground">
+              {c.contactCard.title}
+            </h3>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 text-xs">
               <a
                 href={`tel:${CONSULTANT.phone}`}
-                className="inline-flex items-center gap-2 hover:text-primary transition-colors"
+                className="flex items-center gap-3 rounded-2xl border border-border/60 bg-muted/30 p-3.5 hover:border-primary transition"
               >
-                <Phone className="h-4 w-4 text-primary" /> {CONSULTANT.phoneDisplay}
+                <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Phone className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                    Direct Call
+                  </span>
+                  <span className="font-bold text-foreground">{CONSULTANT.phoneDisplay}</span>
+                </div>
               </a>
+
               <a
                 href={`mailto:${CONSULTANT.email}`}
-                className="inline-flex items-center gap-2 hover:text-primary transition-colors"
+                className="flex items-center gap-3 rounded-2xl border border-border/60 bg-muted/30 p-3.5 hover:border-primary transition"
               >
-                <Mail className="h-4 w-4 text-primary" /> {CONSULTANT.email}
+                <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Mail className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                    Email Inquiries
+                  </span>
+                  <span className="font-bold text-foreground">{CONSULTANT.email}</span>
+                </div>
               </a>
-              <span className="inline-flex items-center gap-2">
-                <MapPin className="h-4 w-4 text-primary" /> {CONSULTANT.office}
-              </span>
-              <span className="inline-flex items-center gap-2">
-                <Star className="h-4 w-4 text-primary" /> {c.contactCard.hours}
-              </span>
+
+              <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-muted/30 p-3.5">
+                <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                    Sales Office
+                  </span>
+                  <span className="font-bold text-foreground">{CONSULTANT.office}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-muted/30 p-3.5">
+                <div className="h-8 w-8 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                  <Star className="h-4 w-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                    Visiting Hours
+                  </span>
+                  <span className="font-bold text-foreground">{c.contactCard.hours}</span>
+                </div>
+              </div>
             </div>
-            <div className="mt-5 flex flex-wrap gap-2">
+
+            <div className="mt-6 flex flex-wrap gap-3">
               <a
                 href={waLink("Hi, I'd like to chat about properties.")}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-whatsapp"
+                className="btn-whatsapp py-3 px-6 text-xs font-bold"
               >
-                <MessageCircle className="h-4 w-4" /> WhatsApp
+                <MessageCircle className="h-4 w-4" /> WhatsApp Consultation
               </a>
-              <Link to="/contact" className="btn-primary">
+              <Link to="/contact" className="btn-primary py-3 px-6 text-xs font-bold">
                 {c.contactCard.buttonBook}
               </Link>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
