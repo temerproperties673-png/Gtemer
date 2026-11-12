@@ -133,7 +133,7 @@ function Contact() {
             <Info
               icon={MessageCircle}
               label="Instant WhatsApp"
-              value={CONSULTANT.phoneDisplay}
+              value={CONSULTANT.whatsappDisplay}
               href={waLink("Hi Yonas, I'd like to consult on verified Temer Properties.")}
             />
             <Info

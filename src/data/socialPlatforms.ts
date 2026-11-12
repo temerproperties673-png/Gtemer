@@ -82,7 +82,7 @@ export const SOCIAL_PLATFORMS: SocialPlatform[] = [
     label: "WhatsApp",
     icon: FaWhatsapp,
     color: "#25D366",
-    placeholder: "https://wa.me/251900000000",
+    placeholder: "https://wa.me/251923791278",
   },
   {
     key: "snapchat",
